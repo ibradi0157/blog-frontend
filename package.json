@@ -6,12 +6,21 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "line": "eslint"
   },
   "dependencies": {
+    "@tiptap/react": "^2",
+    "date-fns": "^4",
+    "framer-motion": "^11",
+    "lucide-react": "latest",
     "next": "16.2.6",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "recharts": "^2",
+    "socket.io-client": "^4",
+    "swr": "^2",
+    "zod": "^3",
+    "zustand": "^5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -24,3 +33,4 @@
     "typescript": "^5"
   }
 }
+
