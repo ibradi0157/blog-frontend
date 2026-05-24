@@ -161,3 +161,6 @@ export const selectIsModerator = (s: AuthState) =>
 /** true si PRIMARY_ADMIN */
 export const selectIsAdmin = (s: AuthState) =>
   selectHasRole(s, 'PRIMARY_ADMIN')
+
+/** Alias pour selectHasRole (avec signature compatible) */
+export const selectIsAtLeastRole = selectHasRole

@@ -19,6 +19,7 @@
     "recharts": "^2",
     "socket.io-client": "^4",
     "swr": "^2",
+    "tailwind-merge": "^3.6.0",
     "zod": "^3",
     "zustand": "^5"
   },
@@ -33,4 +34,3 @@
     "typescript": "^5"
   }
 }
-

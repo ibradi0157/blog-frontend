@@ -78,17 +78,22 @@
 - [x] `src/components/notifications/NotificationDropdown.tsx` — 6 dernières notifs, markAllRead, refresh, lien vers centre
 - [x] `src/components/notifications/NotificationItem.tsx` — icône par type, timeAgo, markRead au click, lien optionnel
 
+### Phase 4 — Authentification (COMPLÈTE) ✅ NEW
+- [x] `src/app/(auth)/connexion/page.tsx` — page login
+- [x] `src/app/(auth)/inscription/page.tsx` — page inscription
+- [x] `src/app/(auth)/verification-email/page.tsx` — page vérif email (Suspense pour useSearchParams)
+- [x] `src/app/(auth)/mot-de-passe-oublie/page.tsx` — page mot de passe oublié
+- [x] `src/app/(auth)/reinitialiser-mdp/page.tsx` — page reset password (Suspense)
+- [x] `src/components/auth/LoginForm.tsx` — email + password, show/hide, validation inline, gestion erreur JWT
+- [x] `src/components/auth/RegisterForm.tsx` — username + email + password + confirm, hints force MdP, redirect vers verification
+- [x] `src/components/auth/VerifyEmailForm.tsx` — 6 inputs OTP, paste support, renvoi code avec cooldown 60s
+- [x] `src/components/auth/ForgotPasswordForm.tsx` — email, succès générique (anti-user-enumeration), état envoyé
+- [x] `src/components/auth/ResetPasswordForm.tsx` — tokenId + token depuis URL, hints force MdP, états: lien invalide / succès
+- [x] `src/hooks/useAuth.ts` — re-export de useAuth() + sélecteurs authStore
+
 ---
 
 ## 🔲 Ce qui reste à faire
-
-### Phase 4 — Authentification (formulaires)
-- [ ] `app/(auth)/connexion/page.tsx` + `components/auth/LoginForm.tsx`
-- [ ] `app/(auth)/inscription/page.tsx` + `components/auth/RegisterForm.tsx`
-- [ ] `app/(auth)/verification-email/page.tsx` + `components/auth/VerifyEmailForm.tsx`
-- [ ] `app/(auth)/mot-de-passe-oublie/page.tsx` + `components/auth/ForgotPasswordForm.tsx`
-- [ ] `app/(auth)/reinitialiser-mdp/page.tsx` + `components/auth/ResetPasswordForm.tsx`
-- [ ] `hooks/useAuth.ts` — wrapper de useAuth() + useAuthStore()
 
 ### Phase 5 — Homepage dynamique
 - [ ] `components/homepage/HeroSection.tsx` — grand titre, CTA, animation légère
@@ -192,6 +197,7 @@
 ```ts
 ROUTES.HOME, ROUTES.ARTICLES, ROUTES.ARTICLE(slug)
 ROUTES.LOGIN, ROUTES.REGISTER, ROUTES.VERIFY_EMAIL
+ROUTES.FORGOT_PASSWORD, ROUTES.RESET_PASSWORD
 ROUTES.DASHBOARD, ROUTES.DASHBOARD_ARTICLES, ROUTES.DASHBOARD_NEW_ARTICLE
 ROUTES.ADMIN, ROUTES.ADMIN_USERS, ROUTES.ADMIN_ANALYTICS…
 ```
@@ -207,6 +213,14 @@ ROUTES.ADMIN, ROUTES.ADMIN_USERS, ROUTES.ADMIN_ANALYTICS…
 ### Guards
 - `<AuthGuard requiredRole="MEMBER">` — redirige vers LOGIN si non connecté ou rôle insuffisant
 - `<RoleGuard requiredRole="SECONDARY_ADMIN">` — idem, rôle obligatoire
+
+### Décisions Phase 4
+- **Validation** : manuelle inline (pas de react-hook-form) — à migrer si besoin de formulaires complexes
+- **Anti-enumeration** : ForgotPasswordForm affiche toujours l'état "envoyé" quelle que soit la réponse backend
+- **OTP** : VerifyEmailForm supporte le paste du code complet + navigation clavier entre digits
+- **Suspense** : pages utilisant `useSearchParams()` wrappées dans `<Suspense>` (Next.js requirement)
+- **Redirect post-register** : `/verification-email?email=xxx` (email passé en query param)
+- **Redirect post-reset-password invalide** : état géré côté composant (lien invalide si pas de tokenId/token)
 
 ---
 
@@ -238,6 +252,7 @@ ROUTES.ADMIN, ROUTES.ADMIN_USERS, ROUTES.ADMIN_ANALYTICS…
 |---|---|
 | `User` | Entité utilisateur complète |
 | `PublicUserProfile` | Profil public réduit |
+| `UpdateProfileDto` | `PUT /users/profile` |
 | `MembersResponse` | `GET /users` |
 | `AuthorsResponse` | `GET /users/authors` |
 | `AuthorProfileResponse` | `GET /users/authors/:id` |
@@ -405,4 +420,26 @@ Animations
 - **Éditeur** : Tiptap recommandé, autosave 30s via `PUT /articles/:id`
 - **Thème** : dark par défaut, classe `dark` sur `<html>`, CSS variables dans globals.css
 - **Images** : `next/image` avec `remotePatterns` configurés dans `next.config.ts`
-- **Formulaires** : react-hook-form + zod (à installer : `pnpm add react-hook-form`)
+- **Formulaires** : validation inline manuelle pour Phase 4 ; react-hook-form + zod pour Phase 11+ (dashboard)
+
+---
+
+## 📊 Progression globale
+
+| Phase | Statut | Fichiers |
+|---|---|---|
+| 0 — Analyse & Architecture | ✅ Complète | — |
+| 1 — Setup projet | ✅ Complète | 5 fichiers |
+| 2 — Fondations (lib + store + contexts) | ✅ Complète | 12 fichiers |
+| 3 — Composants UI de base | ✅ Complète | 20 fichiers |
+| 4 — Authentification | ✅ Complète | 11 fichiers |
+| 5 — Homepage dynamique | 🔲 À faire | 7 fichiers |
+| 6 — Articles publics | 🔲 À faire | 17 fichiers |
+| 7 — Commentaires | 🔲 À faire | 7 fichiers |
+| 8 — Profils & Auteurs | 🔲 À faire | 8 fichiers |
+| 9 — Recherche | 🔲 À faire | 5 fichiers |
+| 10 — Notifications centre | 🔲 À faire | 3 fichiers |
+| 11 — Dashboard auteur | 🔲 À faire | 14 fichiers |
+| 12 — Éditeur d'articles | 🔲 À faire | 10 fichiers |
+| 13 — Panel Admin | 🔲 À faire | 20+ fichiers |
+| 14 — Installation dépendances | 🔲 À faire | — |

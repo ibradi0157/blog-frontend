@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Bell } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { ROUTES } from '@/lib/constants'
-import { useNotificationStore } from "@/store/notificationStore"'
+import { useNotificationStore } from '@/store/notificationStore'
 import { NotificationDropdown } from './NotificationDropdown'
 
 export function NotificationBell() {

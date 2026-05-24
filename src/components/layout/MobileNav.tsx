@@ -6,7 +6,7 @@ import { cn } from '@/lib/cn'
 import { ROUTES } from '@/lib/constants'
 import { useAuth } from '@/contexts/AuthContext'
 import { Home, BookOpen, Search, Bell, User } from 'lucide-react'
-import { useNotificationStore } from "@/store/notificationStore"'
+import { useNotificationStore } from '@/store/notificationStore'
 
 const NAV_ITEMS = [
   { href: ROUTES.HOME,    icon: Home,      label: 'Accueil'    },

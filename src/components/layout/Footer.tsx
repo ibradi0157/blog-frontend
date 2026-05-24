@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { ROUTES } from '@/lib/constants'
-import { Github, Twitter, Rss } from 'lucide-react'
+import { GithubIcon, TwitterIcon, Rss } from 'lucide-react'
 
 const FOOTER_LINKS = [
   {
@@ -49,8 +49,8 @@ export function Footer() {
               Une plateforme de blog communautaire moderne. Lisez, écrivez, partagez.
             </p>
             <div className="mt-4 flex items-center gap-3">
-              <SocialLink href="https://twitter.com" icon={<Twitter className="w-4 h-4"/>} label="Twitter" />
-              <SocialLink href="https://github.com"  icon={<Github  className="w-4 h-4"/>} label="GitHub"  />
+              <SocialLink href="https://twitter.com" icon={<TwitterIcon className="w-4 h-4"/>} label="Twitter" />
+              <SocialLink href="https://github.com"  icon={<GithubIcon  className="w-4 h-4"/>} label="GitHub"  />
               <SocialLink href="/rss.xml"            icon={<Rss     className="w-4 h-4"/>} label="RSS"     />
             </div>
           </div>
