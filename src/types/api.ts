@@ -1016,6 +1016,7 @@ export interface PaginationParams {
 export interface ArticlesQueryParams extends PaginationParams {
   isPublished?: boolean;
   categoryId?: string;
+  tag?: string;
 }
 
 export interface UsersQueryParams extends PaginationParams {

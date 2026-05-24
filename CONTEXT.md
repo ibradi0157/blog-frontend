@@ -78,7 +78,7 @@
 - [x] `src/components/notifications/NotificationDropdown.tsx` — 6 dernières notifs, markAllRead, refresh, lien vers centre
 - [x] `src/components/notifications/NotificationItem.tsx` — icône par type, timeAgo, markRead au click, lien optionnel
 
-### Phase 4 — Authentification (COMPLÈTE) ✅ NEW
+### Phase 4 — Authentification (COMPLÈTE)
 - [x] `src/app/(auth)/connexion/page.tsx` — page login
 - [x] `src/app/(auth)/inscription/page.tsx` — page inscription
 - [x] `src/app/(auth)/verification-email/page.tsx` — page vérif email (Suspense pour useSearchParams)
@@ -91,37 +91,37 @@
 - [x] `src/components/auth/ResetPasswordForm.tsx` — tokenId + token depuis URL, hints force MdP, états: lien invalide / succès
 - [x] `src/hooks/useAuth.ts` — re-export de useAuth() + sélecteurs authStore
 
+### Phase 5 — Homepage dynamique (COMPLÈTE) ✅ NEW
+- [x] `src/components/homepage/HeroSection.tsx` — grand titre, CTA, animation légère
+- [x] `src/components/homepage/FeaturedSection.tsx` — articles mis en avant
+- [x] `src/components/homepage/TrendingSection.tsx` — articles tendance
+- [x] `src/components/homepage/CategoriesSection.tsx` — grille catégories
+- [x] `src/components/homepage/AuthorsSection.tsx` — auteurs populaires
+- [x] `src/components/homepage/NewsletterBanner.tsx` — inscription newsletter
+- [x] `src/hooks/useHomepage.ts` — fetch GET /homepage avec SWR
+
+### Phase 6 — Articles publics (COMPLÈTE) ✅ NEW
+- [x] `src/hooks/useArticles.ts` — fetch GET /articles/public avec SWR + pagination
+- [x] `src/hooks/useArticle.ts` — fetch GET /articles/public/:slug avec SWR
+- [x] `src/components/articles/ArticleCard.tsx` — cover, titre, auteur, temps lecture, stats
+- [x] `src/components/articles/ArticleCardSkeleton.tsx` — loading state carte article
+- [x] `src/components/articles/ArticleGrid.tsx` — responsive 1/2/3 colonnes
+- [x] `src/components/articles/ArticleList.tsx` — vue compacte
+- [x] `src/components/articles/ArticleHeader.tsx` — titre, meta, cover hero
+- [x] `src/components/articles/ArticleContent.tsx` — rendu HTML sécurisé (DOMPurify)
+- [x] `src/components/articles/ArticleActions.tsx` — like, dislike, bookmark, share
+- [x] `src/components/articles/ArticleTags.tsx` — tags cliquables → /recherche?tag=X
+- [x] `src/components/articles/ArticleStats.tsx` — vues, likes, temps lecture
+- [x] `src/components/articles/ArticleMeta.tsx` — auteur, date, catégorie (compact + full)
+- [x] `src/components/articles/ReadingProgress.tsx` — barre de progression lecture fixe en haut
+- [x] `src/components/articles/RelatedArticles.tsx` — articles similaires (même catégorie)
+- [x] `src/components/articles/FeaturedArticle.tsx` — hero card article mis en avant
+- [x] `src/app/(public)/articles/page.tsx` + `ArticlesPageClient.tsx` — liste + filtres catégorie/tag + pagination + vue grid/list
+- [x] `src/app/(public)/articles/[slug]/page.tsx` + `ArticlePageClient.tsx` — article complet, SEO metadata SSR, ReadingProgress, RelatedArticles
+
 ---
 
 ## 🔲 Ce qui reste à faire
-
-### Phase 5 — Homepage dynamique
-- [ ] `components/homepage/HeroSection.tsx` — grand titre, CTA, animation légère
-- [ ] `components/homepage/FeaturedSection.tsx` — articles mis en avant
-- [ ] `components/homepage/TrendingSection.tsx` — articles tendance
-- [ ] `components/homepage/CategoriesSection.tsx` — grille catégories
-- [ ] `components/homepage/AuthorsSection.tsx` — auteurs populaires
-- [ ] `components/homepage/NewsletterBanner.tsx` — inscription newsletter
-- [ ] `hooks/useHomepage.ts` — fetch GET /homepage avec SWR (stub déjà créé)
-
-### Phase 6 — Articles publics
-- [ ] `app/(public)/articles/page.tsx` — liste + filtres catégorie/tag + pagination
-- [ ] `app/(public)/articles/[slug]/page.tsx` — article complet + SEO metadata
-- [ ] `components/articles/ArticleCard.tsx` — cover, titre, auteur, temps lecture, stats
-- [ ] `components/articles/ArticleCardSkeleton.tsx`
-- [ ] `components/articles/ArticleGrid.tsx` — responsive 1/2/3 colonnes
-- [ ] `components/articles/ArticleList.tsx` — vue compacte
-- [ ] `components/articles/ArticleHeader.tsx` — titre, meta, cover hero
-- [ ] `components/articles/ArticleContent.tsx` — rendu HTML sécurisé (DOMPurify)
-- [ ] `components/articles/ArticleActions.tsx` — like, dislike, bookmark, share
-- [ ] `components/articles/ArticleStats.tsx` — vues, likes, temps lecture
-- [ ] `components/articles/ArticleMeta.tsx` — auteur, date, catégorie, tags
-- [ ] `components/articles/ArticleTags.tsx` — tags cliquables → /recherche?tag=X
-- [ ] `components/articles/ReadingProgress.tsx` — barre de progression en haut
-- [ ] `components/articles/RelatedArticles.tsx` — articles similaires (même catégorie)
-- [ ] `components/articles/FeaturedArticle.tsx` — hero card article mis en avant
-- [ ] `hooks/useArticles.ts` — fetch GET /articles/public avec SWR + pagination (stub déjà créé)
-- [ ] `hooks/useArticle.ts` — fetch GET /articles/public/:id avec SWR (stub déjà créé)
 
 ### Phase 7 — Commentaires
 - [ ] `components/comments/CommentSection.tsx`
@@ -140,7 +140,7 @@
 - [ ] `components/profile/FollowButton.tsx`
 - [ ] `components/profile/AvatarUpload.tsx`
 - [ ] `components/profile/SocialLinks.tsx`
-- [ ] `hooks/useFollow.ts` (stub déjà créé)
+- [ ] `hooks/useFollow.ts`
 
 ### Phase 9 — Recherche
 - [ ] `app/(public)/recherche/page.tsx`
@@ -152,7 +152,7 @@
 ### Phase 10 — Notifications (centre)
 - [ ] `app/(member)/notifications/page.tsx` — centre de notifications paginé
 - [ ] `components/notifications/NotificationCenter.tsx`
-- [ ] `hooks/useNotifications.ts` (stub déjà créé)
+- [ ] `hooks/useNotifications.ts`
 
 ### Phase 11 — Dashboard auteur
 - [ ] `app/dashboard/page.tsx`
@@ -222,6 +222,15 @@ ROUTES.ADMIN, ROUTES.ADMIN_USERS, ROUTES.ADMIN_ANALYTICS…
 - **Redirect post-register** : `/verification-email?email=xxx` (email passé en query param)
 - **Redirect post-reset-password invalide** : état géré côté composant (lien invalide si pas de tokenId/token)
 
+### Décisions Phase 6
+- **Architecture page article** : Server Component (`page.tsx`) pour SSR/SEO metadata + Client Component (`ArticlePageClient.tsx`) pour interactivité
+- **Prefetch SSR** : `generateMetadata` + prefetch `initialArticle` côté serveur → passé en prop au client component pour éviter le flash de chargement
+- **Page liste articles** : split `page.tsx` (Server, Suspense) + `ArticlesPageClient.tsx` (Client, useSearchParams)
+- **Article à la une** : premier article affiché en `FeaturedArticle` (hero card) sur la première page sans filtre
+- **Filtres** : catégorie + tag + recherche texte, synchronisés dans l'URL (searchParams)
+- **ReadingProgress** : barre fixe en haut (z-index 9999), opacité 0 → 1 après 80px de scroll, target `#article-content`
+- **RelatedArticles** : fetch côté client de la même catégorie, exclusion de l'article courant, max 3
+
 ---
 
 ## 📐 Types TypeScript configurés (`src/types/api.ts`)
@@ -265,11 +274,12 @@ ROUTES.ADMIN, ROUTES.ADMIN_USERS, ROUTES.ADMIN_ANALYTICS…
 |---|---|
 | `Article` | Entité article complète |
 | `ArticleSummary` | Liste articles |
+| `PublicArticle` | Article public (enrichi auteur/catégorie/tags) |
 | `CreateArticleDto` | `POST /articles` |
 | `UpdateArticleDto` | `PUT /articles/:id` |
 | `ArticlesListResponse` | `GET /articles` (auteur) |
 | `PublicArticlesResponse` | `GET /articles/public` |
-| `PublicArticleResponse` | `GET /articles/public/:id` |
+| `PublicArticleResponse` | `GET /articles/public/:slug` |
 | `PublishResponse` | `POST /articles/:id/publish` |
 | `UploadCoverResponse` | Upload image couverture |
 
@@ -433,8 +443,8 @@ Animations
 | 2 — Fondations (lib + store + contexts) | ✅ Complète | 12 fichiers |
 | 3 — Composants UI de base | ✅ Complète | 20 fichiers |
 | 4 — Authentification | ✅ Complète | 11 fichiers |
-| 5 — Homepage dynamique | 🔲 À faire | 7 fichiers |
-| 6 — Articles publics | 🔲 À faire | 17 fichiers |
+| 5 — Homepage dynamique | ✅ Complète | 7 fichiers |
+| 6 — Articles publics | ✅ Complète | 17 fichiers |
 | 7 — Commentaires | 🔲 À faire | 7 fichiers |
 | 8 — Profils & Auteurs | 🔲 À faire | 8 fichiers |
 | 9 — Recherche | 🔲 À faire | 5 fichiers |

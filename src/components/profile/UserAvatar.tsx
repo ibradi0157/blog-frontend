@@ -2,9 +2,10 @@ import Image from 'next/image'
 import { cn } from '@/lib/cn'
 
 interface AvatarUser {
-  email:      string
-  username?:  string
-  avatarUrl?: string | null
+  email:       string
+  username?:   string
+  displayName?: string
+  avatarUrl?:  string | null
 }
 
 interface UserAvatarProps {
@@ -38,7 +39,7 @@ function getBgColor(str: string) {
 
 export function UserAvatar({ user, size = 'md', className }: UserAvatarProps) {
   const { container, text } = sizes[size]
-  const displayName = user.username ?? user.email
+  const displayName = user.username ?? user.displayName ?? user.email
   const bg = getBgColor(displayName)
 
   if (user.avatarUrl) {
