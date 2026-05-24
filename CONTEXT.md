@@ -79,112 +79,142 @@
 - [x] `src/components/notifications/NotificationItem.tsx` — icône par type, timeAgo, markRead au click, lien optionnel
 
 ### Phase 4 — Authentification (COMPLÈTE)
-- [x] `src/app/(auth)/connexion/page.tsx` — page login
-- [x] `src/app/(auth)/inscription/page.tsx` — page inscription
-- [x] `src/app/(auth)/verification-email/page.tsx` — page vérif email (Suspense pour useSearchParams)
-- [x] `src/app/(auth)/mot-de-passe-oublie/page.tsx` — page mot de passe oublié
-- [x] `src/app/(auth)/reinitialiser-mdp/page.tsx` — page reset password (Suspense)
-- [x] `src/components/auth/LoginForm.tsx` — email + password, show/hide, validation inline, gestion erreur JWT
-- [x] `src/components/auth/RegisterForm.tsx` — username + email + password + confirm, hints force MdP, redirect vers verification
-- [x] `src/components/auth/VerifyEmailForm.tsx` — 6 inputs OTP, paste support, renvoi code avec cooldown 60s
-- [x] `src/components/auth/ForgotPasswordForm.tsx` — email, succès générique (anti-user-enumeration), état envoyé
-- [x] `src/components/auth/ResetPasswordForm.tsx` — tokenId + token depuis URL, hints force MdP, états: lien invalide / succès
-- [x] `src/hooks/useAuth.ts` — re-export de useAuth() + sélecteurs authStore
+- [x] `src/app/(auth)/connexion/page.tsx`
+- [x] `src/app/(auth)/inscription/page.tsx`
+- [x] `src/app/(auth)/verification-email/page.tsx` — Suspense pour useSearchParams
+- [x] `src/app/(auth)/mot-de-passe-oublie/page.tsx`
+- [x] `src/app/(auth)/reinitialiser-mdp/page.tsx` — Suspense
+- [x] `src/components/auth/LoginForm.tsx`
+- [x] `src/components/auth/RegisterForm.tsx`
+- [x] `src/components/auth/VerifyEmailForm.tsx` — OTP 6 chiffres + paste + cooldown 60s
+- [x] `src/components/auth/ForgotPasswordForm.tsx` — anti-user-enumeration
+- [x] `src/components/auth/ResetPasswordForm.tsx`
+- [x] `src/hooks/useAuth.ts`
 
-### Phase 5 — Homepage dynamique (COMPLÈTE) ✅ NEW
-- [x] `src/components/homepage/HeroSection.tsx` — grand titre, CTA, animation légère
-- [x] `src/components/homepage/FeaturedSection.tsx` — articles mis en avant
-- [x] `src/components/homepage/TrendingSection.tsx` — articles tendance
-- [x] `src/components/homepage/CategoriesSection.tsx` — grille catégories
-- [x] `src/components/homepage/AuthorsSection.tsx` — auteurs populaires
-- [x] `src/components/homepage/NewsletterBanner.tsx` — inscription newsletter
-- [x] `src/hooks/useHomepage.ts` — fetch GET /homepage avec SWR
+### Phase 5 — Homepage dynamique (COMPLÈTE)
+- [x] `src/components/homepage/HeroSection.tsx`
+- [x] `src/components/homepage/FeaturedSection.tsx`
+- [x] `src/components/homepage/TrendingSection.tsx`
+- [x] `src/components/homepage/CategoriesSection.tsx`
+- [x] `src/components/homepage/AuthorsSection.tsx`
+- [x] `src/components/homepage/NewsletterBanner.tsx`
+- [x] `src/hooks/useHomepage.ts`
 
-### Phase 6 — Articles publics (COMPLÈTE) ✅ NEW
-- [x] `src/hooks/useArticles.ts` — fetch GET /articles/public avec SWR + pagination
-- [x] `src/hooks/useArticle.ts` — fetch GET /articles/public/:slug avec SWR
-- [x] `src/components/articles/ArticleCard.tsx` — cover, titre, auteur, temps lecture, stats
-- [x] `src/components/articles/ArticleCardSkeleton.tsx` — loading state carte article
-- [x] `src/components/articles/ArticleGrid.tsx` — responsive 1/2/3 colonnes
-- [x] `src/components/articles/ArticleList.tsx` — vue compacte
-- [x] `src/components/articles/ArticleHeader.tsx` — titre, meta, cover hero
-- [x] `src/components/articles/ArticleContent.tsx` — rendu HTML sécurisé (DOMPurify)
+### Phase 6 — Articles publics (COMPLÈTE)
+- [x] `src/hooks/useArticles.ts`
+- [x] `src/hooks/useArticle.ts`
+- [x] `src/components/articles/ArticleCard.tsx`
+- [x] `src/components/articles/ArticleCardSkeleton.tsx`
+- [x] `src/components/articles/ArticleGrid.tsx`
+- [x] `src/components/articles/ArticleList.tsx`
+- [x] `src/components/articles/ArticleHeader.tsx`
+- [x] `src/components/articles/ArticleContent.tsx` — DOMPurify
 - [x] `src/components/articles/ArticleActions.tsx` — like, dislike, bookmark, share
-- [x] `src/components/articles/ArticleTags.tsx` — tags cliquables → /recherche?tag=X
-- [x] `src/components/articles/ArticleStats.tsx` — vues, likes, temps lecture
-- [x] `src/components/articles/ArticleMeta.tsx` — auteur, date, catégorie (compact + full)
-- [x] `src/components/articles/ReadingProgress.tsx` — barre de progression lecture fixe en haut
-- [x] `src/components/articles/RelatedArticles.tsx` — articles similaires (même catégorie)
-- [x] `src/components/articles/FeaturedArticle.tsx` — hero card article mis en avant
-- [x] `src/app/(public)/articles/page.tsx` + `ArticlesPageClient.tsx` — liste + filtres catégorie/tag + pagination + vue grid/list
-- [x] `src/app/(public)/articles/[slug]/page.tsx` + `ArticlePageClient.tsx` — article complet, SEO metadata SSR, ReadingProgress, RelatedArticles
+- [x] `src/components/articles/ArticleTags.tsx`
+- [x] `src/components/articles/ArticleStats.tsx`
+- [x] `src/components/articles/ArticleMeta.tsx`
+- [x] `src/components/articles/ReadingProgress.tsx`
+- [x] `src/components/articles/RelatedArticles.tsx`
+- [x] `src/components/articles/FeaturedArticle.tsx`
+- [x] `src/app/(public)/articles/page.tsx` + `ArticlesPageClient.tsx`
+- [x] `src/app/(public)/articles/[slug]/page.tsx` + `ArticlePageClient.tsx`
+
+### Phase 7 — Commentaires (COMPLÈTE) ✅ NEW
+- [x] `src/hooks/useComments.ts` — SWR, addComment, replyToComment, deleteComment, likeComment, reportComment
+- [x] `src/components/comments/CommentSkeleton.tsx` — CommentSkeleton + CommentListSkeleton
+- [x] `src/components/comments/CommentForm.tsx` — formulaire (auth check, validation, states)
+- [x] `src/components/comments/CommentReplyForm.tsx` — wrapper reply avec @username
+- [x] `src/components/comments/CommentActions.tsx` — like, répondre, supprimer (owner), signaler, menu MoreHorizontal
+- [x] `src/components/comments/CommentItem.tsx` — avatar, username, timeAgo, replies collapsibles
+- [x] `src/components/comments/CommentSection.tsx` — section complète avec ReportModal intégré
+- [x] `src/components/comments/ReportModal.tsx` — modal signalement avec 5 raisons
+
+### Phase 8 — Profils & Auteurs (COMPLÈTE) ✅ NEW
+- [x] `src/hooks/useFollow.ts` — follow/unfollow, isFollowing, followerCount, SWR
+- [x] `src/components/profile/ProfileHeader.tsx` — cover, avatar overlapping, bio, stats, follow, social links
+- [x] `src/components/profile/ProfileStats.tsx` — articles, vues, abonnés, likes (icônes + formatCount)
+- [x] `src/components/profile/FollowButton.tsx` — follow/unfollow avec états (logged out → login, following → hover unfollow)
+- [x] `src/components/profile/AvatarUpload.tsx` — upload avatar avec preview hover, validation type/taille
+- [x] `src/components/profile/SocialLinks.tsx` — website, twitter, github, linkedin, youtube, instagram
+- [x] `src/app/(public)/auteurs/page.tsx` + `AuthorsPageClient.tsx` — grille auteurs avec follow inline
+- [x] `src/app/(public)/auteurs/[id]/page.tsx` — SSR metadata + articles de l'auteur
+
+### Phase 9 — Recherche (COMPLÈTE) ✅ NEW
+- [x] `src/components/search/SearchBar.tsx` — input avec clear button, submit → /recherche?q=
+- [x] `src/components/search/SearchFilters.tsx` — tri (pertinence/récent/populaire/vues) + filtres catégories pills
+- [x] `src/components/search/SearchResults.tsx` — grille résultats + empty state + pagination
+- [x] `src/components/search/SearchModal.tsx` — modal avec debounce 300ms, aperçu 5 résultats, lien "voir tout"
+- [x] `src/app/(public)/recherche/page.tsx` + `SearchPageClient.tsx` — page complète, searchParams synchro URL
+
+### Phase 10 — Notifications centre (COMPLÈTE) ✅ NEW
+- [x] `src/hooks/useNotifications.ts` — SWR paginé, markRead, markAllRead, sync avec notificationStore
+- [x] `src/components/notifications/NotificationCenter.tsx` — liste paginée, refresh, markAllRead, unread badge
+- [x] `src/app/(member)/notifications/page.tsx` — AuthGuard + NotificationCenter
+
+### Hooks complémentaires (COMPLETS) ✅ NEW
+- [x] `src/hooks/useCategories.ts` — SWR GET /categories avec dedupingInterval 60s
+- [x] `src/hooks/useBookmarks.ts` — liked articles + isBookmarked(id) + useArticleLikedStatus
+- [x] `src/hooks/useAnalytics.ts` — useAnalyticsOverview, useAnalyticsTimeSeries, useRealTimeStats
+- [x] `src/hooks/useUsers.ts` — admin : liste users, changeRole, banUser
+
+### Pages complémentaires (COMPLÈTES) ✅ NEW
+- [x] `src/app/(public)/categories/[slug]/page.tsx` + `CategoryPageClient.tsx` — articles par catégorie
+- [x] `src/app/(public)/legal/[slug]/page.tsx` — pages légales dynamiques (SSR)
+- [x] `src/app/(member)/profil/page.tsx` + `ProfilPageClient.tsx` — édition profil (bio, social, avatar)
 
 ---
 
 ## 🔲 Ce qui reste à faire
 
-### Phase 7 — Commentaires
-- [ ] `components/comments/CommentSection.tsx`
-- [ ] `components/comments/CommentForm.tsx`
-- [ ] `components/comments/CommentItem.tsx`
-- [ ] `components/comments/CommentReplyForm.tsx`
-- [ ] `components/comments/CommentActions.tsx`
-- [ ] `components/comments/CommentSkeleton.tsx`
-- [ ] `hooks/useComments.ts`
-
-### Phase 8 — Profils & Auteurs
-- [ ] `app/(public)/auteurs/page.tsx`
-- [ ] `app/(public)/auteurs/[id]/page.tsx`
-- [ ] `components/profile/ProfileHeader.tsx`
-- [ ] `components/profile/ProfileStats.tsx`
-- [ ] `components/profile/FollowButton.tsx`
-- [ ] `components/profile/AvatarUpload.tsx`
-- [ ] `components/profile/SocialLinks.tsx`
-- [ ] `hooks/useFollow.ts`
-
-### Phase 9 — Recherche
-- [ ] `app/(public)/recherche/page.tsx`
-- [ ] `components/search/SearchBar.tsx`
-- [ ] `components/search/SearchModal.tsx`
-- [ ] `components/search/SearchResults.tsx`
-- [ ] `components/search/SearchFilters.tsx`
-
-### Phase 10 — Notifications (centre)
-- [ ] `app/(member)/notifications/page.tsx` — centre de notifications paginé
-- [ ] `components/notifications/NotificationCenter.tsx`
-- [ ] `hooks/useNotifications.ts`
-
 ### Phase 11 — Dashboard auteur
-- [ ] `app/dashboard/page.tsx`
-- [ ] `app/dashboard/articles/page.tsx`
-- [ ] `app/dashboard/articles/nouveau/page.tsx`
-- [ ] `app/dashboard/articles/[id]/page.tsx`
-- [ ] `app/dashboard/articles/[id]/stats/page.tsx`
-- [ ] `app/dashboard/commentaires/page.tsx`
-- [ ] `app/dashboard/abonnes/page.tsx`
-- [ ] `app/dashboard/parametres/page.tsx`
-- [ ] `components/dashboard/StatCard.tsx`, `StatCardSkeleton.tsx`, `RecentActivity.tsx`, `ArticlesTable.tsx`, `DraftsList.tsx`, `PublishedList.tsx`
+- [ ] `app/dashboard/page.tsx` — stats résumé (StatCards + RecentActivity)
+- [ ] `app/dashboard/articles/page.tsx` — liste mes articles (brouillons + publiés)
+- [ ] `app/dashboard/articles/nouveau/page.tsx` — créer article
+- [ ] `app/dashboard/articles/[id]/page.tsx` — éditer article
+- [ ] `app/dashboard/articles/[id]/stats/page.tsx` — stats article
+- [ ] `app/dashboard/commentaires/page.tsx` — commentaires reçus
+- [ ] `app/dashboard/abonnes/page.tsx` — abonnés + following
+- [ ] `app/dashboard/parametres/page.tsx` — paramètres compte
+- [ ] `components/dashboard/StatCard.tsx` + `StatCardSkeleton.tsx`
+- [ ] `components/dashboard/RecentActivity.tsx`
+- [ ] `components/dashboard/ArticlesTable.tsx` — tableau avec actions (publier, supprimer, éditer)
+- [ ] `components/dashboard/DraftsList.tsx`
+- [ ] `components/dashboard/PublishedList.tsx`
 
 ### Phase 12 — Éditeur d'articles
-- [ ] `components/editor/ArticleEditor.tsx` — Tiptap
+- [ ] `components/editor/ArticleEditor.tsx` — Tiptap (extensions : bold, italic, headings, lists, link, image)
 - [ ] `components/editor/EditorToolbar.tsx`
 - [ ] `components/editor/EditorBubbleMenu.tsx`
 - [ ] `components/editor/EditorSlashCommands.tsx`
 - [ ] `components/editor/EditorImageUpload.tsx`
 - [ ] `components/editor/EditorCoverUpload.tsx`
-- [ ] `components/editor/ArticleMetaForm.tsx`
+- [ ] `components/editor/ArticleMetaForm.tsx` — titre, excerpt, SEO, catégorie, tags, slug
 - [ ] `components/editor/ArticleScheduler.tsx`
 - [ ] `components/editor/ArticleVersionHistory.tsx`
 - [ ] `components/editor/AutosaveIndicator.tsx`
 
 ### Phase 13 — Panel Admin
-- [ ] `app/admin/page.tsx`
-- [ ] `app/admin/utilisateurs/`, `articles/`, `commentaires/`, `categories/`, `analytics/`, `newsletter/`, `homepage/`, `site/`, `securite/`
-- [ ] Tous les composants `components/admin/`
+- [ ] `app/admin/page.tsx` — dashboard analytics overview
+- [ ] `app/admin/utilisateurs/page.tsx` + `[id]/page.tsx`
+- [ ] `app/admin/articles/page.tsx` + `[id]/page.tsx`
+- [ ] `app/admin/commentaires/page.tsx` + `signalements/page.tsx`
+- [ ] `app/admin/categories/page.tsx`
+- [ ] `app/admin/analytics/page.tsx` + `temps-reel/page.tsx`
+- [ ] `app/admin/newsletter/page.tsx`
+- [ ] `app/admin/homepage/page.tsx`
+- [ ] `app/admin/site/page.tsx`
+- [ ] `app/admin/securite/page.tsx`
+- [ ] `components/admin/AdminStatCard.tsx`, `UsersTable.tsx`, `UserRoleSelect.tsx`
+- [ ] `components/admin/CommentsTable.tsx`, `ReportsTable.tsx`
+- [ ] `components/admin/AnalyticsChart.tsx`, `AnalyticsOverview.tsx`
+- [ ] `components/admin/HomepageBuilder.tsx`, `CategoryManager.tsx`
+- [ ] `components/admin/SiteSettingsForm.tsx`, `NewsletterManager.tsx`, `AdminArticlesTable.tsx`
 
-### Phase 14 — Installation manuelle restante
-- [ ] `pnpm add react-hook-form clsx tailwind-merge` (react-hook-form manquant)
-- [ ] `pnpm add -D @types/node`
+### Phase 14 — Installation dépendances
+- [ ] `pnpm add react-hook-form zod clsx tailwind-merge swr zustand socket.io-client date-fns dompurify`
+- [ ] `pnpm add @tiptap/react @tiptap/starter-kit @tiptap/extension-image @tiptap/extension-link`
+- [ ] `pnpm add recharts framer-motion`
+- [ ] `pnpm add -D @types/node @types/dompurify`
 - [ ] Setup shadcn/ui : `npx shadcn@latest init`
 - [ ] Ajout composants shadcn : `npx shadcn@latest add button input card dialog dropdown-menu toast badge avatar skeleton tabs select switch table`
 - [ ] Création `.env.local` depuis `.env.local.example`
@@ -200,6 +230,7 @@ ROUTES.LOGIN, ROUTES.REGISTER, ROUTES.VERIFY_EMAIL
 ROUTES.FORGOT_PASSWORD, ROUTES.RESET_PASSWORD
 ROUTES.DASHBOARD, ROUTES.DASHBOARD_ARTICLES, ROUTES.DASHBOARD_NEW_ARTICLE
 ROUTES.ADMIN, ROUTES.ADMIN_USERS, ROUTES.ADMIN_ANALYTICS…
+ROUTES.AUTHOR(id), ROUTES.SEARCH, ROUTES.NOTIFICATIONS, ROUTES.PROFIL
 ```
 
 ### Contextes & stores
@@ -214,22 +245,28 @@ ROUTES.ADMIN, ROUTES.ADMIN_USERS, ROUTES.ADMIN_ANALYTICS…
 - `<AuthGuard requiredRole="MEMBER">` — redirige vers LOGIN si non connecté ou rôle insuffisant
 - `<RoleGuard requiredRole="SECONDARY_ADMIN">` — idem, rôle obligatoire
 
-### Décisions Phase 4
-- **Validation** : manuelle inline (pas de react-hook-form) — à migrer si besoin de formulaires complexes
-- **Anti-enumeration** : ForgotPasswordForm affiche toujours l'état "envoyé" quelle que soit la réponse backend
-- **OTP** : VerifyEmailForm supporte le paste du code complet + navigation clavier entre digits
-- **Suspense** : pages utilisant `useSearchParams()` wrappées dans `<Suspense>` (Next.js requirement)
-- **Redirect post-register** : `/verification-email?email=xxx` (email passé en query param)
-- **Redirect post-reset-password invalide** : état géré côté composant (lien invalide si pas de tokenId/token)
+### Décisions Phase 7
+- **CommentSection** : intègre CommentForm (root) + CommentItem (liste) + ReportModal (lazy)
+- **Replies** : collapsibles avec toggle, maximum 1 niveau de profondeur affiché
+- **Auth check** : CommentForm affiche un lien de connexion si non authentifié
+- **Optimiste** : revalidation SWR après chaque mutation (pas d'optimistic update pour simplifier)
+
+### Décisions Phase 8
+- **FollowButton** : affiche rien si `user.id === authorId` (propre profil)
+- **AvatarUpload** : validation côté client (type image, max 5 Mo) avant POST
+- **ProfileHeader** : avatar avec `ring-4` pour chevaucher la cover image
+- **AuthorPage** : SSR pour metadata SEO, articles passés directement depuis le même appel API
+
+### Décisions Phase 9
+- **SearchModal** : debounce 300ms, max 5 résultats aperçu, ferme à Escape
+- **SearchPageClient** : tous les filtres synchronisés dans l'URL (searchParams), `keepPreviousData: true` pour éviter le flash
+- **SearchFilters** : categories chargées depuis `/categories` (SWR), pills toggle
 
 ### Décisions Phase 6
 - **Architecture page article** : Server Component (`page.tsx`) pour SSR/SEO metadata + Client Component (`ArticlePageClient.tsx`) pour interactivité
-- **Prefetch SSR** : `generateMetadata` + prefetch `initialArticle` côté serveur → passé en prop au client component pour éviter le flash de chargement
-- **Page liste articles** : split `page.tsx` (Server, Suspense) + `ArticlesPageClient.tsx` (Client, useSearchParams)
-- **Article à la une** : premier article affiché en `FeaturedArticle` (hero card) sur la première page sans filtre
-- **Filtres** : catégorie + tag + recherche texte, synchronisés dans l'URL (searchParams)
-- **ReadingProgress** : barre fixe en haut (z-index 9999), opacité 0 → 1 après 80px de scroll, target `#article-content`
-- **RelatedArticles** : fetch côté client de la même catégorie, exclusion de l'article courant, max 3
+- **Prefetch SSR** : `generateMetadata` + prefetch `initialArticle` côté serveur
+- **ReadingProgress** : barre fixe en haut (z-index 9999), target `#article-content`
+- **RelatedArticles** : fetch côté client, même catégorie, max 3, exclusion de l'article courant
 
 ---
 
@@ -431,6 +468,9 @@ Animations
 - **Thème** : dark par défaut, classe `dark` sur `<html>`, CSS variables dans globals.css
 - **Images** : `next/image` avec `remotePatterns` configurés dans `next.config.ts`
 - **Formulaires** : validation inline manuelle pour Phase 4 ; react-hook-form + zod pour Phase 11+ (dashboard)
+- **Search** : debounce 300ms dans SearchModal, searchParams URL pour SearchPage, `keepPreviousData: true` SWR
+- **Comments** : 1 niveau de replies max affiché, collapse/expand, report via ReportModal
+- **Follow** : double SWR (status + count), toggle optimiste avec mutex `isToggling`
 
 ---
 
@@ -445,11 +485,12 @@ Animations
 | 4 — Authentification | ✅ Complète | 11 fichiers |
 | 5 — Homepage dynamique | ✅ Complète | 7 fichiers |
 | 6 — Articles publics | ✅ Complète | 17 fichiers |
-| 7 — Commentaires | 🔲 À faire | 7 fichiers |
-| 8 — Profils & Auteurs | 🔲 À faire | 8 fichiers |
-| 9 — Recherche | 🔲 À faire | 5 fichiers |
-| 10 — Notifications centre | 🔲 À faire | 3 fichiers |
-| 11 — Dashboard auteur | 🔲 À faire | 14 fichiers |
+| 7 — Commentaires | ✅ Complète | 8 fichiers |
+| 8 — Profils & Auteurs | ✅ Complète | 10 fichiers |
+| 9 — Recherche | ✅ Complète | 7 fichiers |
+| 10 — Notifications centre | ✅ Complète | 3 fichiers |
+| Hooks & pages complémentaires | ✅ Complets | 10 fichiers |
+| 11 — Dashboard auteur | 🔲 À faire | 13 fichiers |
 | 12 — Éditeur d'articles | 🔲 À faire | 10 fichiers |
 | 13 — Panel Admin | 🔲 À faire | 20+ fichiers |
 | 14 — Installation dépendances | 🔲 À faire | — |
