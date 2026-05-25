@@ -26,7 +26,7 @@ export function useRealTimeStats() {
   const { data, isLoading, error } = useSWR<RealTimeStats>(
     '/analytics/realtime',
     () => apiClient.analytics.getRealTime(),
-    { refreshInterval: 10_000 }
+    { refreshInterval: 5_000 }
   );
   return { realTime: data, isLoading, error };
 }

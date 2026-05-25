@@ -73,6 +73,8 @@ async function enrichFromPublicProfile(
         twitter:     profile.twitter     ?? currentUser.twitter,
         github:      profile.github      ?? currentUser.github,
         linkedin:    profile.linkedin    ?? currentUser.linkedin,
+        youtube:     profile.youtube     ?? currentUser.youtube,
+        instagram:   profile.instagram   ?? currentUser.instagram,
       })
     }
   } catch { /* silencieux */ }

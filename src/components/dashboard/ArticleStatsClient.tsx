@@ -12,7 +12,7 @@ export interface ArticleStatsClientProps {
 export function ArticleStatsClient({ articleId }: ArticleStatsClientProps) {
   const { data, isLoading } = useSWR(
     `/articles/${articleId}/stats`,
-    () => apiClient.articleStats.getArticleStats(articleId)
+    () => apiClient.articleStats.get(articleId)
   );
   const stats = (data as any) ?? {};
 

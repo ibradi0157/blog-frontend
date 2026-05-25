@@ -112,6 +112,57 @@ export function AdminUserDetailClient({ userId }: AdminUserDetailClientProps) {
           <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{user.bio}</p>
         </div>
       )}
+
+      {/* Articles */}
+      <UserArticlesList userId={userId} />
+    </div>
+  );
+}
+
+function UserArticlesList({ userId }: { userId: string }) {
+  const { data, isLoading } = useSWR(
+    `/users/${userId}/articles`,
+    () => (apiClient.users as any).getUserArticles?.(userId) ?? apiClient.articles.getPublic({ authorId: userId, limit: 10 })
+  );
+  const articles: any[] = (data as any)?.data ?? (data as any)?.articles ?? [];
+
+  return (
+    <div className="card p-6">
+      <h2 className="font-semibold text-[var(--text-primary)] mb-4">Articles récents</h2>
+      {isLoading ? (
+        <div className="space-y-2 animate-pulse">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="h-10 bg-[var(--bg-hover)] rounded-lg" />
+          ))}
+        </div>
+      ) : articles.length === 0 ? (
+        <p className="text-sm text-[var(--text-muted)]">Aucun article publié.</p>
+      ) : (
+        <ul className="divide-y divide-[var(--border)]">
+          {articles.slice(0, 10).map((article: any) => (
+            <li key={article.id} className="py-3 flex items-center justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <a
+                  href={`/admin/articles/${article.id}`}
+                  className="text-sm font-medium text-[var(--text-primary)] hover:text-[var(--accent)] truncate block transition-colors"
+                >
+                  {article.title}
+                </a>
+                <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                  {article.viewsCount ?? 0} vues · {article.likesCount ?? 0} likes
+                </p>
+              </div>
+              <span className={`text-xs px-2 py-0.5 rounded-full ${
+                article.status === 'published'
+                  ? 'bg-[var(--success)]/15 text-[var(--success)]'
+                  : 'bg-[var(--bg-hover)] text-[var(--text-muted)]'
+              }`}>
+                {article.status ?? 'brouillon'}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

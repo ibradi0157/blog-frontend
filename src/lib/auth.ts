@@ -44,6 +44,8 @@ export interface AuthUser {
   twitter?:     string | null
   github?:      string | null
   linkedin?:    string | null
+  youtube?:     string | null
+  instagram?:   string | null
 }
 
 // ─────────────────────────────────────────────
