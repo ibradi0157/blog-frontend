@@ -2,6 +2,7 @@
 
 import useSWR from 'swr';
 import { apiClient } from '@/lib/api-client';
+import { extractPagination } from '@/lib/pagination';
 import { ArticleGrid } from '@/components/articles/ArticleGrid';
 import { ArticleCardSkeleton } from '@/components/articles/ArticleCardSkeleton';
 import { Pagination } from '@/components/ui/pagination';
@@ -23,7 +24,7 @@ export function CategoryPageClient({ slug }: CategoryPageClientProps) {
   );
 
   const articles = data?.data ?? [];
-  const totalPages = Math.ceil((data?.total ?? 0) / LIMIT);
+  const totalPages = extractPagination(data, { limit: LIMIT }).pages ?? 0;
 
   return (
     <div className="py-8 space-y-8">

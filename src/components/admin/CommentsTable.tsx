@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Trash2, Flag } from 'lucide-react';
 import useSWR from 'swr';
 import { apiClient } from '@/lib/api-client';
+import { extractPagination } from '@/lib/pagination';
 import { UserAvatar } from '@/components/profile/UserAvatar';
 import { formatDate } from '@/lib/utils';
 import type { Comment } from '@/types/api';
@@ -17,7 +18,7 @@ export function CommentsTable() {
   );
 
   const comments: Comment[] = (data as any)?.data ?? [];
-  const total: number = (data as any)?.total ?? 0;
+  const { total } = extractPagination(data);
 
   const handleDelete = async (id: string) => {
     if (!confirm('Supprimer ce commentaire ?')) return;

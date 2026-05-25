@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { CheckCircle, XCircle } from 'lucide-react';
 import useSWR from 'swr';
 import { apiClient } from '@/lib/api-client';
+import { extractPagination } from '@/lib/pagination';
 import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/lib/utils';
 import type { CommentReport } from '@/types/api';
@@ -17,7 +18,7 @@ export function ReportsTable() {
   );
 
   const reports: CommentReport[] = (data as any)?.data ?? [];
-  const total: number = (data as any)?.total ?? 0;
+  const { total } = extractPagination(data);
 
   const handleResolve = async (id: string, action: 'resolve' | 'dismiss') => {
     await (apiClient.comments as any).resolveReport?.(id, action);

@@ -125,6 +125,7 @@ import type {
   CommentsQueryParams,
   HealthStatus,
   ApiResponse,
+  PaginationMeta,
 } from '@/types/api'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -431,7 +432,7 @@ export const usersApi = {
    * Liste tous les utilisateurs. Réservé PRIMARY_ADMIN + SECONDARY_ADMIN.
    */
   getAll: (params?: UsersQueryParams) =>
-    http.get<{ data: User[]; total: number; page: number; limit: number }>(
+    http.get<ApiResponse<User[]> & { pagination?: PaginationMeta }>(
       `/users${buildQuery(params as Record<string, unknown>)}`
     ),
 
@@ -450,7 +451,7 @@ export const usersApi = {
    * Profil public d'un membre.
    */
   getPublicProfile: (id: string) =>
-    http.get<PublicUserProfile>(`/users/public/${id}`, { noAuth: true }),
+    http.get<ApiResponse<PublicUserProfile>>(`/users/public/${id}`, { noAuth: true }),
 
   /**
    * GET /users/public/:id/articles

@@ -1,23 +1,26 @@
+'use client';
+
 import useSWR from 'swr';
 import api from '@/lib/api-client';
 import { extractPagination } from '@/lib/pagination';
-import type { PublicArticlesResponse, ArticlesQueryParams } from '@/types/api';
+import type { ArticlesListResponse, ArticlesQueryParams } from '@/types/api';
 
 function buildKey(params: ArticlesQueryParams) {
-  return ['articles/public', JSON.stringify(params)];
+  return ['articles/mine', JSON.stringify(params)];
 }
 
-async function fetchArticles([, paramsJson]: [string, string]): Promise<PublicArticlesResponse> {
+async function fetchMyArticles([, paramsJson]: [string, string]): Promise<ArticlesListResponse> {
   const params = JSON.parse(paramsJson) as ArticlesQueryParams;
-  return api.articles.getPublic(params);
+  return api.articles.getAll(params);
 }
 
-export function useArticles(params: ArticlesQueryParams = {}) {
+/** Articles de l'utilisateur connecté (dashboard) — endpoint authentifié GET /articles */
+export function useMyArticles(params: ArticlesQueryParams = {}) {
   const key = buildKey(params);
 
-  const { data, error, isLoading, mutate } = useSWR<PublicArticlesResponse>(
+  const { data, error, isLoading, mutate } = useSWR<ArticlesListResponse>(
     key,
-    fetchArticles,
+    fetchMyArticles,
     { revalidateOnFocus: false },
   );
 

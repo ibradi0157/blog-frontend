@@ -2,6 +2,7 @@
 
 import useSWR from 'swr';
 import { apiClient } from '@/lib/api-client';
+import { extractPagination } from '@/lib/pagination';
 import { MembersResponse, RoleName } from '@/types/api';
 
 interface UseUsersParams {
@@ -30,9 +31,11 @@ export function useUsers({ page = 1, limit = 20, search, role }: UseUsersParams 
     await mutate();
   };
 
+  const pagination = extractPagination(data, { limit });
+
   return {
     users: data?.data ?? [],
-    total: data?.total ?? 0,
+    total: pagination.total,
     isLoading,
     error,
     changeRole,

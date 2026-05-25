@@ -2,6 +2,7 @@
 
 import useSWR, { mutate } from 'swr';
 import { apiClient } from '@/lib/api-client';
+import { extractPagination } from '@/lib/pagination';
 import { Comment, CreateCommentDto, CommentsListResponse } from '@/types/api';
 
 const COMMENTS_KEY = (articleId: string) => `/comments/article/${articleId}`;
@@ -39,9 +40,11 @@ export function useComments(articleId: string) {
     await apiClient.comments.report(commentId, reason);
   };
 
+  const pagination = extractPagination(data);
+
   return {
     comments: data?.data ?? [],
-    total: data?.total ?? 0,
+    total: pagination.total,
     isLoading,
     error,
     addComment,

@@ -5,6 +5,7 @@ import { Search, Eye, Trash2, Edit } from 'lucide-react';
 import Link from 'next/link';
 import useSWR from 'swr';
 import { apiClient } from '@/lib/api-client';
+import { extractPagination } from '@/lib/pagination';
 import { Badge } from '@/components/ui/badge';
 import { formatDate } from '@/lib/utils';
 import type { ArticleSummary } from '@/types/api';
@@ -20,7 +21,7 @@ export function AdminArticlesTable() {
   );
 
   const articles: ArticleSummary[] = (data as any)?.data ?? [];
-  const total: number = (data as any)?.total ?? 0;
+  const { total } = extractPagination(data);
 
   const handleDelete = async (id: string) => {
     if (!confirm('Supprimer cet article ?')) return;

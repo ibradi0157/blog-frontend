@@ -17,11 +17,20 @@ export interface ApiResponse<T> {
   message?: string;
 }
 
-export interface PaginatedResponse<T> {
-  data: T[];
+export interface PaginationMeta {
   total: number;
   page: number;
   limit: number;
+  pages?: number;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination?: PaginationMeta;
+  /** @deprecated Préférer pagination.total */
+  total?: number;
+  page?: number;
+  limit?: number;
 }
 
 export interface ApiError {
@@ -375,18 +384,14 @@ export type UpdateArticleDto = Partial<CreateArticleDto>;
 export interface ArticlesListResponse {
   success: boolean;
   data: Article[];
-  total?: number;
-  page?: number;
-  limit?: number;
+  pagination?: PaginationMeta;
 }
 
 /** GET /articles/public */
 export interface PublicArticlesResponse {
   success: boolean;
   data: ArticleSummary[];
-  total: number;
-  page: number;
-  limit: number;
+  pagination: PaginationMeta;
 }
 
 /** GET /articles/public/:id */
@@ -534,9 +539,7 @@ export interface CreateCommentDto {
 export interface CommentsListResponse {
   success?: boolean;
   data: Comment[];
-  total: number;
-  page: number;
-  limit: number;
+  pagination?: PaginationMeta;
 }
 
 /** GET /comments/reports */
@@ -610,6 +613,7 @@ export interface Notification {
 
 /** GET /notifications */
 export interface NotificationsResponse {
+  success?: boolean;
   data: Notification[];
   total: number;
   unreadCount: number;

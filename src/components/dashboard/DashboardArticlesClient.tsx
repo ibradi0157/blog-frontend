@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
-import { useArticles } from '@/hooks/useArticles';
+import { useMyArticles } from '@/hooks/useMyArticles';
 import { ArticlesTable } from '@/components/dashboard/ArticlesTable';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { ROUTES } from '@/lib/constants';
@@ -14,7 +14,7 @@ type Tab = 'all' | 'published' | 'draft';
 
 export function DashboardArticlesClient() {
   const [tab, setTab] = useState<Tab>('all');
-  const { articles, isLoading, refresh } = useArticles();
+  const { articles, isLoading, refresh } = useMyArticles({ limit: 100 });
 
   async function handleDelete(id: string) {
     await api.articles.delete(id);

@@ -2,6 +2,7 @@
 
 import useSWR from 'swr';
 import { apiClient } from '@/lib/api-client';
+import { extractPagination } from '@/lib/pagination';
 import { NotificationsResponse } from '@/types/api';
 import { useNotificationStore } from '@/store/notificationStore';
 
@@ -27,9 +28,11 @@ export function useNotifications(page = 1, limit = 20) {
     await mutate();
   };
 
+  const pagination = extractPagination(data);
+
   return {
-    notifications: data?.data ?? [],
-    total: data?.total ?? 0,
+    notifications: Array.isArray(data) ? data : (data?.data ?? []),
+    total: pagination.total,
     unreadCount: data?.unreadCount ?? 0,
     isLoading,
     error,

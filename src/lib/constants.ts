@@ -9,12 +9,20 @@
 // API & WEBSOCKET
 // ─────────────────────────────────────────────
 
-export const BASE_URL = (
-  process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000'
-).replace(/\/$/, '') + '/api/v1'
+const API_ORIGIN = (
+  process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api/v1'
+).replace(/\/$/, '')
 
-export const WS_URL =
-  process.env.NEXT_PUBLIC_WS_URL ?? BASE_URL
+export const BASE_URL = API_ORIGIN.endsWith('/api/v1')
+  ? API_ORIGIN
+  : `${API_ORIGIN}/api/v1`
+
+/** Socket.io est monté à la racine du backend, pas sous /api/v1 */
+export const WS_URL = (
+  process.env.NEXT_PUBLIC_WS_URL ??
+  API_ORIGIN.replace(/\/api\/v1$/, '') ||
+  'http://localhost:3000'
+).replace(/\/$/, '')
 
 // ─────────────────────────────────────────────
 // STORAGE KEYS

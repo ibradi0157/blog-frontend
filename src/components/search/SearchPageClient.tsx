@@ -7,6 +7,7 @@ import { SearchBar } from '@/components/search/SearchBar';
 import { SearchFilters } from '@/components/search/SearchFilters';
 import { SearchResults } from '@/components/search/SearchResults';
 import { apiClient } from '@/lib/api-client';
+import { extractPagination } from '@/lib/pagination';
 import { PublicArticlesResponse } from '@/types/api';
 
 export function SearchPageClient() {
@@ -59,7 +60,7 @@ export function SearchPageClient() {
       <SearchResults
         query={q}
         articles={data?.data ?? []}
-        total={data?.total ?? 0}
+        total={extractPagination(data, { limit: LIMIT }).total}
         page={page}
         limit={LIMIT}
         isLoading={isLoading}
