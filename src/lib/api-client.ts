@@ -132,8 +132,8 @@ import type {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const BASE_URL = (
-  process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001'
-).replace(/\/$/, '')
+  process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000'
+).replace(/\/$/, '') + '/api/v1'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ERROR CLASS

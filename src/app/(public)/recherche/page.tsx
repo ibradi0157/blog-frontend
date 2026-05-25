@@ -4,8 +4,9 @@ import { SearchPageClient } from '@/components/search/SearchPageClient';
 import { PageWrapper } from '@/components/layout/PageWrapper';
 import { PageLoader } from '@/components/ui/loading-spinner';
 
-export function generateMetadata({ searchParams }: { searchParams: { q?: string } }): Metadata {
-  const q = searchParams.q;
+export async function generateMetadata({ searchParams }: { searchParams: Promise<{ q?: string }> }): Promise<Metadata> {
+  const params = await searchParams;
+  const q = params.q;
   return {
     title: q ? `Résultats pour « ${q} » — Blog` : 'Recherche — Blog',
   };

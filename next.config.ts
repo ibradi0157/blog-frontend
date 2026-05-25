@@ -10,13 +10,13 @@ const nextConfig: NextConfig = {
       {
         protocol: "http",
         hostname: "localhost",
-        port: "3001",
+        port: "3000",
         pathname: "/**",
       },
     ],
   },
   async rewrites() {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
     return [
       {
         source: "/api/:path*",

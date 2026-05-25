@@ -10,8 +10,8 @@
 // ─────────────────────────────────────────────
 
 export const BASE_URL = (
-  process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001'
-).replace(/\/$/, '')
+  process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000'
+).replace(/\/$/, '') + '/api/v1'
 
 export const WS_URL =
   process.env.NEXT_PUBLIC_WS_URL ?? BASE_URL
