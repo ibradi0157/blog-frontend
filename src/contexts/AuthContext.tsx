@@ -7,11 +7,10 @@
  *
  * Responsabilités :
  *  - Hydrater le store auth depuis localStorage au montage
+ *  - Enrichir AuthUser avec le profil complet après login (GET /users/public/:id)
  *  - Exposer login() / logout() avec effets de bord (redirect, toast…)
  *  - Surveiller l'expiration du token et déconnecter automatiquement
  *  - Fournir un hook useAuth() typé pour les composants enfants
- *
- * Doit encadrer toute l'application dans app/layout.tsx.
  */
 
 import React, {
@@ -25,6 +24,7 @@ import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
 import { tokenExpiresInSeconds } from '@/lib/auth'
 import { ROUTES } from '@/lib/constants'
+import api from '@/lib/api-client'
 import type { AuthUser } from '@/lib/auth'
 import type { AuthResponse, RoleName } from '@/types/api'
 
@@ -33,27 +33,15 @@ import type { AuthResponse, RoleName } from '@/types/api'
 // ─────────────────────────────────────────────
 
 interface AuthContextValue {
-  /** Utilisateur connecté, null si non authentifié */
   user:            AuthUser | null
-  /** JWT courant */
   token:           string | null
   isAuthenticated: boolean
-  /** false tant que le store n'a pas été hydraté (premier rendu) */
   isHydrated:      boolean
-  /**
-   * Authentifie l'utilisateur à partir d'une réponse backend.
-   * @param response   Réponse /auth/login ou /auth/register
-   * @param redirectTo Route de redirection après login (défaut : dashboard)
-   */
-  login:   (response: AuthResponse, redirectTo?: string) => void
-  /**
-   * Déconnecte l'utilisateur et redirige vers /connexion.
-   */
+  login:   (response: AuthResponse, redirectTo?: string) => Promise<void>
   logout:  () => void
-  /**
-   * Vérifie si l'utilisateur courant a au moins le rôle spécifié.
-   */
   hasRole: (role: RoleName) => boolean
+  /** Rafraîchit le profil depuis GET /users/public/:id */
+  refreshProfile: () => Promise<void>
 }
 
 // ─────────────────────────────────────────────
@@ -61,6 +49,34 @@ interface AuthContextValue {
 // ─────────────────────────────────────────────
 
 const AuthContext = createContext<AuthContextValue | null>(null)
+
+// ─────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────
+
+/** Enrichit le store avec les données du profil public */
+async function enrichFromPublicProfile(
+  userId: string,
+  currentUser: AuthUser,
+  updateProfile: (patch: Partial<AuthUser>) => void
+) {
+  try {
+    const res = await api.users.getPublicProfile(userId)
+    const profile = (res as any)?.data ?? (res as any)
+    if (profile?.id) {
+      updateProfile({
+        displayName: profile.displayName ?? currentUser.displayName,
+        username:    profile.username    ?? currentUser.username,
+        avatarUrl:   profile.avatarUrl   ?? currentUser.avatarUrl,
+        bio:         profile.bio         ?? currentUser.bio,
+        website:     profile.website     ?? currentUser.website,
+        twitter:     profile.twitter     ?? currentUser.twitter,
+        github:      profile.github      ?? currentUser.github,
+        linkedin:    profile.linkedin    ?? currentUser.linkedin,
+      })
+    }
+  } catch { /* silencieux */ }
+}
 
 // ─────────────────────────────────────────────
 // PROVIDER
@@ -81,10 +97,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // ── Enrichissement du profil au montage (si déjà authentifié) ────────────
+  useEffect(() => {
+    if (!store.isAuthenticated || !store.user?.id) return
+    enrichFromPublicProfile(store.user.id, store.user, store.updateProfile)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [store.isAuthenticated])
+
   // ── Auto-logout à expiration ──────────────────────────────────────────────
   useEffect(() => {
     if (timerRef.current) clearTimeout(timerRef.current)
-
     if (!store.token || !store.isAuthenticated) return
 
     const secondsLeft = tokenExpiresInSeconds(store.token)
@@ -94,24 +116,32 @@ export function AuthProvider({ children }: AuthProviderProps) {
       return
     }
 
-    // Planifie la déconnexion 10 secondes avant expiration
     const delay = Math.max(0, (secondsLeft - 10) * 1_000)
     timerRef.current = setTimeout(() => {
       store.logout()
       router.push(ROUTES.LOGIN + '?expired=1')
     }, delay)
 
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current)
-    }
+    return () => { if (timerRef.current) clearTimeout(timerRef.current) }
   }, [store.token, store.isAuthenticated, router, store])
+
+  // ── refreshProfile ────────────────────────────────────────────────────────
+  const refreshProfile = useCallback(async () => {
+    if (!store.isAuthenticated || !store.user?.id) return
+    await enrichFromPublicProfile(store.user.id, store.user, store.updateProfile)
+  }, [store])
 
   // ── login ─────────────────────────────────────────────────────────────────
   const login = useCallback(
-    (response: AuthResponse, redirectTo?: string) => {
+    async (response: AuthResponse, redirectTo?: string) => {
       store.login(response)
-      const dest = redirectTo ?? ROUTES.DASHBOARD
-      router.push(dest)
+      // Enrichir immédiatement après login (store.user est maintenant peuplé)
+      const userId = (response as any)?.data?.user?.id ?? (response as any)?.user?.id
+      if (userId) {
+        const fakeUser: AuthUser = { id: userId, email: '', role: 'SIMPLE_USER' }
+        await enrichFromPublicProfile(userId, fakeUser, store.updateProfile)
+      }
+      router.push(redirectTo ?? ROUTES.DASHBOARD)
     },
     [store, router]
   )
@@ -127,10 +157,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     (role: RoleName): boolean => {
       if (!store.user) return false
       const levels: Record<string, number> = {
-        SIMPLE_USER:     1,
-        MEMBER:          2,
-        SECONDARY_ADMIN: 3,
-        PRIMARY_ADMIN:   4,
+        SIMPLE_USER: 1, MEMBER: 2, SECONDARY_ADMIN: 3, PRIMARY_ADMIN: 4,
       }
       return (levels[store.user.role] ?? 0) >= (levels[role] ?? 0)
     },
@@ -145,6 +172,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     login,
     logout,
     hasRole,
+    refreshProfile,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
@@ -154,13 +182,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 // HOOK
 // ─────────────────────────────────────────────
 
-/**
- * Hook principal d'authentification.
- * Lève une erreur si utilisé hors du AuthProvider.
- *
- * @example
- *   const { user, isAuthenticated, login, logout, hasRole } = useAuth()
- */
 export function useAuth(): AuthContextValue {
   const ctx = useContext(AuthContext)
   if (!ctx) {

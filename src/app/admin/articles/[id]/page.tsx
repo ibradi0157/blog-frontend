@@ -1,15 +1,25 @@
 import { Suspense } from 'react';
 import { PageLoader } from '@/components/ui/loading-spinner';
+import dynamic from 'next/dynamic';
+
+const AdminArticleDetailClient = dynamic(
+  () => import('@/components/admin/AdminArticleDetailClient').then(m => m.AdminArticleDetailClient),
+  { loading: () => <PageLoader />, ssr: false }
+);
 
 interface Props { params: Promise<{ id: string }> }
+
+export async function generateMetadata({ params }: Props) {
+  const { id } = await params;
+  return { title: `Article ${id} — Admin` };
+}
 
 export default async function AdminArticleDetailPage({ params }: Props) {
   const { id } = await params;
   return (
     <div className="space-y-6 animate-fade-in">
-      <h1 className="text-2xl font-bold text-[var(--text-primary)]">Article #{id}</h1>
       <Suspense fallback={<PageLoader />}>
-        <p className="text-[var(--text-muted)]">Vue admin de l'article (modération, stats, édition).</p>
+        <AdminArticleDetailClient articleId={id} />
       </Suspense>
     </div>
   );

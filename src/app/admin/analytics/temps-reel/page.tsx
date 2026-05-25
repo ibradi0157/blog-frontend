@@ -1,11 +1,11 @@
-'use client';
-import { useRealTimeStats } from '@/hooks/useAnalytics';
-import { AdminStatCard } from '@/components/admin/AdminStatCard';
-import { Eye, Users, Activity } from 'lucide-react';
+import { Metadata } from 'next';
+import { Suspense } from 'react';
+import { AdminRealTimeClient } from '@/components/admin/AdminRealTimeClient';
+import { PageLoader } from '@/components/ui/loading-spinner';
+
+export const metadata: Metadata = { title: 'Temps réel — Analytics Admin' };
 
 export default function AdminRealTimePage() {
-  const { realTime, isLoading } = useRealTimeStats();
-
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center gap-3">
@@ -15,11 +15,9 @@ export default function AdminRealTimePage() {
           Live
         </span>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <AdminStatCard title="Visiteurs actifs" value={(realTime as any)?.activeUsers ?? '—'} icon={<Users size={18} />} />
-        <AdminStatCard title="Vues (dernière heure)" value={(realTime as any)?.viewsLastHour ?? '—'} icon={<Eye size={18} />} />
-        <AdminStatCard title="Événements/min" value={(realTime as any)?.eventsPerMinute ?? '—'} icon={<Activity size={18} />} />
-      </div>
+      <Suspense fallback={<PageLoader />}>
+        <AdminRealTimeClient />
+      </Suspense>
     </div>
   );
 }

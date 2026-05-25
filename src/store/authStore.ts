@@ -63,7 +63,7 @@ interface AuthActions {
    * Met à jour le displayName et l'avatarUrl dans le store
    * (après modification du profil sans re-login).
    */
-  updateProfile: (patch: Partial<Pick<AuthUser, 'email'>>) => void
+  updateProfile: (patch: Partial<AuthUser>) => void
 }
 
 // ─────────────────────────────────────────────

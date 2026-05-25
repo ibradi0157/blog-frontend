@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useEditor, EditorContent } from '@tiptap/react';
+import { useEditor, EditorContent, Extension } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
@@ -20,7 +20,9 @@ import { ArticleMetaForm, type ArticleMeta } from './ArticleMetaForm';
 import { ArticleScheduler } from './ArticleScheduler';
 import { ArticleVersionHistory } from './ArticleVersionHistory';
 import { EditorImageUpload } from './EditorImageUpload';
+import { SlashCommandList, getSlashItems } from './EditorSlashCommands';
 import { cn } from '@/lib/cn';
+import { createPortal } from 'react-dom';
 
 export interface ArticleEditorProps {
   mode: 'create' | 'edit';
@@ -33,6 +35,43 @@ export interface ArticleEditorProps {
 }
 
 type SidePanel = 'meta' | 'history' | null;
+
+/**
+ * Crée l'extension Tiptap pour les slash commands.
+ * Utilise Suggestion si disponible, sinon fallback sans suggestion.
+ */
+function createSlashCommandExtension() {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { Suggestion } = require('@tiptap/suggestion');
+
+    return Extension.create({
+      name: 'slashCommand',
+      addOptions() {
+        return {
+          suggestion: {
+            char: '/',
+            command: ({ editor, range, props }: any) => {
+              props.command(editor);
+              editor.chain().focus().deleteRange(range).run();
+            },
+          },
+        };
+      },
+      addProseMirrorPlugins() {
+        return [
+          Suggestion({
+            editor: this.editor,
+            ...this.options.suggestion,
+          }),
+        ];
+      },
+    });
+  } catch {
+    // @tiptap/suggestion non installé : retourner une extension no-op
+    return Extension.create({ name: 'slashCommand' });
+  }
+}
 
 export function ArticleEditor({
   mode,
@@ -59,6 +98,13 @@ export function ArticleEditor({
   const [sidePanel, setSidePanel] = useState<SidePanel>(null);
   const [showImageUpload, setShowImageUpload] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Slash commands state
+  const [slashMenuOpen, setSlashMenuOpen] = useState(false);
+  const [slashItems, setSlashItems] = useState(getSlashItems(''));
+  const [slashMenuPos, setSlashMenuPos] = useState({ top: 0, left: 0 });
+  const slashRef = useRef<any>(null);
+
   const autosaveTimer = useRef<NodeJS.Timeout>();
   const contentRef = useRef(initialContent);
 
@@ -67,7 +113,7 @@ export function ArticleEditor({
       StarterKit.configure({ codeBlock: false }),
       Image,
       Link.configure({ openOnClick: false, autolink: true }),
-      Placeholder.configure({ placeholder: 'Commencez à écrire votre article…' }),
+      Placeholder.configure({ placeholder: 'Commencez à écrire votre article… (tapez / pour les commandes)' }),
       CharacterCount,
       Underline,
     ],
@@ -75,13 +121,54 @@ export function ArticleEditor({
     onUpdate: ({ editor }) => {
       contentRef.current = editor.getHTML();
       triggerAutosave();
+
+      // Détection manuelle du slash pour les slash commands
+      const { state } = editor;
+      const { selection } = state;
+      const { $from } = selection;
+      const textBefore = $from.nodeBefore?.textContent ?? '';
+      const match = textBefore.match(/\/([^/\s]*)$/);
+      if (match) {
+        const query = match[1];
+        const items = getSlashItems(query);
+        setSlashItems(items);
+        setSlashMenuOpen(true);
+        // Position approximative du curseur
+        const dom = editor.view.domAtPos($from.pos);
+        if (dom.node instanceof Element) {
+          const rect = dom.node.getBoundingClientRect();
+          setSlashMenuPos({ top: rect.bottom + window.scrollY + 4, left: rect.left });
+        }
+      } else {
+        setSlashMenuOpen(false);
+      }
     },
     editorProps: {
       attributes: {
         class: 'prose prose-invert max-w-none focus:outline-none min-h-[400px] text-[var(--text-primary)]',
       },
+      handleKeyDown: (_view, event) => {
+        if (!slashMenuOpen) return false;
+        return slashRef.current?.onKeyDown({ event }) ?? false;
+      },
     },
   });
+
+  const handleSlashCommand = useCallback((item: { command: (editor: any) => void }) => {
+    if (!editor) return;
+    // Effacer le "/" avant d'exécuter la commande
+    const { state } = editor;
+    const { selection } = state;
+    const { $from } = selection;
+    const textBefore = $from.nodeBefore?.textContent ?? '';
+    const match = textBefore.match(/\/[^/\s]*$/);
+    if (match) {
+      const from = $from.pos - match[0].length;
+      editor.chain().focus().deleteRange({ from, to: $from.pos }).run();
+    }
+    item.command(editor);
+    setSlashMenuOpen(false);
+  }, [editor]);
 
   const save = useCallback(async () => {
     if (!articleId && mode === 'edit') return;
@@ -122,7 +209,7 @@ export function ArticleEditor({
     if (!articleId) { await save(); return; }
     setIsSubmitting(true);
     try {
-      await (apiClient.scheduling as any).publish?.(articleId) ?? apiClient.articles.update(articleId, { isPublished: true });
+      await apiClient.articles.update(articleId, { isPublished: true } as any);
       setPublished(true);
     } finally {
       setIsSubmitting(false);
@@ -133,7 +220,7 @@ export function ArticleEditor({
     if (!articleId) return;
     setIsSubmitting(true);
     try {
-      await apiClient.articles.update(articleId, { isPublished: false });
+      await apiClient.articles.update(articleId, { isPublished: false } as any);
       setPublished(false);
     } finally {
       setIsSubmitting(false);
@@ -149,6 +236,14 @@ export function ArticleEditor({
   };
 
   const charCount = editor?.storage?.characterCount?.characters?.() ?? 0;
+
+  // Fermer le slash menu au clic extérieur
+  useEffect(() => {
+    if (!slashMenuOpen) return;
+    const close = () => setSlashMenuOpen(false);
+    document.addEventListener('click', close);
+    return () => document.removeEventListener('click', close);
+  }, [slashMenuOpen]);
 
   return (
     <div className="flex h-full min-h-screen bg-[var(--bg-primary)]">
@@ -208,6 +303,21 @@ export function ArticleEditor({
           </div>
         )}
       </div>
+
+      {/* Slash command menu */}
+      {slashMenuOpen && slashItems.length > 0 && typeof document !== 'undefined' && createPortal(
+        <div
+          style={{ position: 'absolute', top: slashMenuPos.top, left: slashMenuPos.left, zIndex: 9999 }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <SlashCommandList
+            ref={slashRef}
+            items={slashItems}
+            command={handleSlashCommand as any}
+          />
+        </div>,
+        document.body
+      )}
 
       {/* Side panel */}
       {sidePanel && (

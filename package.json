@@ -22,7 +22,19 @@
     "swr": "^2",
     "tailwind-merge": "^3.6.0",
     "zod": "^3",
-    "zustand": "^5"
+    "zustand": "^5",
+    "@tiptap/pm": "^2",
+    "@tiptap/starter-kit": "^2",
+    "@tiptap/extension-image": "^2",
+    "@tiptap/extension-link": "^2",
+    "@tiptap/extension-placeholder": "^2",
+    "@tiptap/extension-bubble-menu": "^2",
+    "@tiptap/extension-character-count": "^2",
+    "@tiptap/extension-underline": "^2",
+    "@tiptap/extension-code-block-lowlight": "^2",
+    "@tiptap/suggestion": "^2",
+    "lowlight": "^3",
+    "clsx": "^2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

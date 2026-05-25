@@ -4,6 +4,7 @@ import './globals.css'
 import { AuthProvider }         from '@/contexts/AuthContext'
 import { NotificationProvider } from '@/contexts/NotificationContext'
 import { ThemeProvider }         from '@/contexts/ThemeContext'
+import { Toaster }               from '@/components/ui/toaster'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] })
@@ -38,7 +39,9 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <NotificationProvider>
-              {children}
+              <Toaster>
+                {children}
+              </Toaster>
             </NotificationProvider>
           </AuthProvider>
         </ThemeProvider>

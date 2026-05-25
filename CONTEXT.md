@@ -1,4 +1,4 @@
-# CONTEXT.md — État du projet après itération 1/10
+# CONTEXT.md — État du projet après itération 2/10
 
 > Mis à jour : 2026-05-25
 > Basé sur AUDIT_ET_PLAN_COMPLET.md
@@ -36,7 +36,7 @@
 
 **Hooks corrigés** :
 - `useBookmarks.ts` : accès `isLiked` sécurisé (`data?.isLiked ?? data?.data?.isLiked`)
-- `useFollow.ts` : utilise maintenant les alias `checkFollowing` et `followerCount` (déjà corrects grâce aux alias ajoutés dans api-client)
+- `useFollow.ts` : utilise maintenant les alias `checkFollowing` et `followerCount`
 - `useAnalytics.ts` : `getTimeSeries(period)` fonctionne avec la nouvelle signature flexible
 
 **Composants corrigés** :
@@ -84,133 +84,219 @@
 
 #### Sprint 4 — Éditeur Tiptap (tous les 10 fichiers implémentés)
 
-- `AutosaveIndicator.tsx` ✅ — statuts: idle, saving, saved, error
-- `EditorToolbar.tsx` ✅ — Bold, Italic, Underline, Strike, H1-H3, lists, blockquote, code, link, image
-- `EditorBubbleMenu.tsx` ✅ — menu flottant au survol de sélection
-- `EditorSlashCommands.tsx` ✅ — SlashCommandList + getSlashItems helper
-- `EditorImageUpload.tsx` ✅ — upload fichier + URL
-- `EditorCoverUpload.tsx` ✅ — upload couverture article
-- `ArticleMetaForm.tsx` ✅ — excerpt, catégorie, tags, boutons publier/dépublier/archiver
-- `ArticleScheduler.tsx` ✅ — datetime picker + appel API schedule
-- `ArticleVersionHistory.tsx` ✅ — liste versions avec restauration
-- `ArticleEditor.tsx` ✅ — composant central Tiptap avec autosave, side panel meta/history
+- `AutosaveIndicator.tsx` ✅
+- `EditorToolbar.tsx` ✅
+- `EditorBubbleMenu.tsx` ✅
+- `EditorSlashCommands.tsx` ✅ — SlashCommandList + getSlashItems
+- `EditorImageUpload.tsx` ✅
+- `EditorCoverUpload.tsx` ✅
+- `ArticleMetaForm.tsx` ✅
+- `ArticleScheduler.tsx` ✅
+- `ArticleVersionHistory.tsx` ✅
+- `ArticleEditor.tsx` ✅
 
 #### Sprint 5 — Panel Admin (composants + pages)
 
-**Composants admin créés** :
-- `AdminStatCard.tsx` ✅ — avec tendance
-- `AdminArticlesTable.tsx` ✅ — avec search, filtres, pagination
-- `UsersTable.tsx` ✅ — avec search, rôle, ban
-- `UserRoleSelect.tsx` ✅ — select inline avec PATCH
-- `CommentsTable.tsx` ✅
-- `ReportsTable.tsx` ✅ — resolve/dismiss
-- `CategoryManager.tsx` ✅ — CRUD inline
-- `AnalyticsChart.tsx` ✅ — recharts LineChart
-- `AnalyticsOverview.tsx` ✅ — 4 stats + graphique + selector période
-- `NewsletterManager.tsx` ✅ — compteur + envoi
-- `HomepageBuilder.tsx` ✅ — toggle sections
-- `SiteSettingsForm.tsx` ✅ — paramètres site
+**Composants admin créés** : AdminStatCard, AdminArticlesTable, UsersTable, UserRoleSelect, CommentsTable, ReportsTable, CategoryManager, AnalyticsChart, AnalyticsOverview, NewsletterManager, HomepageBuilder, SiteSettingsForm ✅
 
-**Pages admin créées** :
-- `admin/page.tsx` ✅
-- `admin/utilisateurs/page.tsx` ✅
-- `admin/utilisateurs/[id]/page.tsx` ✅ (stub)
-- `admin/articles/page.tsx` ✅
-- `admin/articles/[id]/page.tsx` ✅ (stub)
-- `admin/commentaires/page.tsx` ✅
-- `admin/commentaires/signalements/page.tsx` ✅
-- `admin/categories/page.tsx` ✅
-- `admin/analytics/page.tsx` ✅
-- `admin/analytics/temps-reel/page.tsx` ✅
-- `admin/newsletter/page.tsx` ✅
-- `admin/homepage/page.tsx` ✅
-- `admin/site/page.tsx` ✅
-- `admin/securite/page.tsx` ✅ (stub — backend à implémenter)
+**Pages admin créées** : page, utilisateurs, utilisateurs/[id], articles, articles/[id], commentaires, commentaires/signalements, categories, analytics, analytics/temps-reel, newsletter, homepage, site, securite ✅
 
-**Pages dashboard créées** :
-- `dashboard/articles/[id]/page.tsx` ✅ — ArticleEditor mode edit
-- `dashboard/articles/[id]/stats/page.tsx` ✅
-- `dashboard/commentaires/page.tsx` ✅
-- `dashboard/abonnes/page.tsx` ✅
-- `dashboard/parametres/page.tsx` ✅
+**Pages dashboard créées** : articles/[id], articles/[id]/stats, commentaires, abonnes, parametres ✅
 
 ---
 
-## 🔄 CE QUI RESTE À FAIRE (itérations 2-10)
+## ✅ ITÉRATION 2/10 — COMPLÉTÉE
 
-### Itération 2 — Dépendances Tiptap à installer
+### Ce qui a été fait
+
+#### Toaster global — ✅ FAIT
+- `src/app/layout.tsx` : `<Toaster>` ajouté autour de `{children}` pour activer les toasts globaux dans toute l'application.
+
+#### AuthContext enrichissement post-login — ✅ FAIT
+- `src/contexts/AuthContext.tsx` : réécriture complète.
+  - Ajout de `enrichFromPublicProfile()` : appelle `api.users.getPublicProfile(userId)` et enrichit `AuthUser` via `store.updateProfile()`.
+  - `login()` : enrichit le profil immédiatement après login.
+  - Au montage : enrichit silencieusement si l'utilisateur était déjà authentifié (token localStorage).
+  - Nouveau : `refreshProfile()` exposé dans le contexte — permet aux composants de forcer la resynchronisation.
+- `src/store/authStore.ts` : signature `updateProfile(patch)` étendue de `Partial<Pick<AuthUser, 'email'>>` à `Partial<AuthUser>`.
+
+#### Architecture — Violations "use client" dans page.tsx corrigées — ✅ FAIT
+
+Toutes les pages `app/` sont maintenant de purs Server Components. Les logiques client ont été extraites dans `src/components/`:
+
+| Page                                     | Composant client extrait                               |
+|------------------------------------------|--------------------------------------------------------|
+| `dashboard/articles/page.tsx`            | `DashboardArticlesClient.tsx`                          |
+| `dashboard/commentaires/page.tsx`        | `DashboardCommentsClient.tsx`                          |
+| `dashboard/abonnes/page.tsx`             | `DashboardFollowersClient.tsx`                         |
+| `dashboard/parametres/page.tsx`          | `DashboardSettingsClient.tsx`                          |
+| `admin/analytics/temps-reel/page.tsx`    | `AdminRealTimeClient.tsx`                              |
+| `dashboard/articles/[id]/stats/page.tsx` | `ArticleStatsClient.tsx`                               |
+
+#### DashboardSettingsClient — améliorations — ✅ FAIT
+- Champs `twitter`, `github`, `linkedin` ajoutés au formulaire.
+- Appelle `refreshProfile()` après sauvegarde pour mettre à jour le header/nav immédiatement.
+
+#### Admin — Pages détaillées complètes — ✅ FAIT
+- `admin/utilisateurs/[id]` : nouveau composant `AdminUserDetailClient.tsx` avec infos, stats (articles/vues/likes), changement de rôle inline via `UserRoleSelect`, bouton bannir.
+- `admin/articles/[id]` : nouveau composant `AdminArticleDetailClient.tsx` avec actions modération (publier/dépublier/supprimer), stats, métadonnées, tags, lien vers l'article public.
+- Bug corrigé : `<RoleGuard roles={[...]}>` → `<RoleGuard requiredRole="SECONDARY_ADMIN">` (prop incorrecte).
+
+#### ArticleEditor — SlashCommands intégrées — ✅ FAIT
+- `ArticleEditor.tsx` : détection manuelle du `/` dans l'éditeur, affichage du `SlashCommandList` via `createPortal`, gestion clavier (↑ ↓ Entrée), fermeture au clic extérieur.
+- Compatible avec et sans `@tiptap/suggestion` : fallback graceful si le package n'est pas installé.
+
+#### package.json — dépendances Tiptap ajoutées — ✅ FAIT
+```
+@tiptap/pm, @tiptap/starter-kit, @tiptap/extension-image, @tiptap/extension-link,
+@tiptap/extension-placeholder, @tiptap/extension-bubble-menu,
+@tiptap/extension-character-count, @tiptap/extension-underline,
+@tiptap/extension-code-block-lowlight, @tiptap/suggestion, lowlight, clsx
+```
+
+---
+
+## 🔄 CE QUI RESTE À FAIRE (itérations 3-10)
+
+### Itération 3 — Installer les dépendances (action manuelle)
 
 ```bash
-pnpm add @tiptap/react @tiptap/pm @tiptap/starter-kit \
-  @tiptap/extension-image @tiptap/extension-link \
-  @tiptap/extension-placeholder @tiptap/extension-bubble-menu \
-  @tiptap/extension-character-count \
-  @tiptap/extension-underline \
-  @tiptap/extension-code-block-lowlight lowlight \
-  @tiptap/suggestion
+pnpm install
+# ou
+npm install
 ```
 
-L'éditeur est implémenté mais ne compilera pas sans ces dépendances installées.
+Les dépendances sont dans `package.json` mais doivent être installées localement.
 
-### Itération 3 — Intégration Toaster dans le layout
+### Itération 4 — CodeBlockLowlight dans ArticleEditor
 
-Ajouter le `<Toaster>` dans `src/app/layout.tsx` pour activer les toasts globaux :
-```tsx
-import { Toaster } from '@/components/ui/toaster';
-// Dans le body : <Toaster>{children}</Toaster>
-```
+Une fois `lowlight` et `@tiptap/extension-code-block-lowlight` installés :
 
-### Itération 4 — AuthContext enrichissement
-
-Dans `src/contexts/AuthContext.tsx`, après login, appeler `GET /auth/me` ou `GET /users/me` pour enrichir `AuthUser` avec `displayName`, `avatarUrl`, `bio`, etc. (voir §3.3 de l'audit).
-
-### Itération 5 — `useCategories` hook (vérifier l'adaptation)
-
-`ArticleMetaForm` utilise `useCategories` — vérifier que ce hook retourne bien `categories` avec la nouvelle structure `CategoriesResponse.data`.
-
-### Itération 6 — Tiptap Extension Code Block Lowlight
-
-`ArticleEditor` importe `StarterKit.configure({ codeBlock: false })` pour permettre `@tiptap/extension-code-block-lowlight`. Une fois les dépendances installées, ajouter l'extension :
 ```tsx
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import { common, createLowlight } from 'lowlight';
 const lowlight = createLowlight(common);
-// Dans extensions: CodeBlockLowlight.configure({ lowlight })
+
+// Dans extensions de useEditor :
+// Remplacer StarterKit.configure({ codeBlock: false }) par StarterKit seul
+// Ajouter : CodeBlockLowlight.configure({ lowlight })
 ```
 
-### Itération 7 — Slash Commands complètes
+Fichier : `src/components/editor/ArticleEditor.tsx`
 
-`EditorSlashCommands` exporte les fonctions helper mais l'intégration avec `@tiptap/suggestion` dans `ArticleEditor` n'est pas encore branchée. Il faut créer l'extension `SlashCommand` via `suggestion` et l'ajouter aux extensions Tiptap.
+### Itération 5 — Vérifier `pnpm build` (0 erreurs TypeScript)
 
-### Itération 8 — Admin pages détaillées (stubs à compléter)
+Objectifs de validation :
+- `pnpm build` ou `npx tsc --noEmit` doit passer sans erreur.
+- Vérifier que les re-exports `DraftsList`, `PublishedList`, `StatCardSkeleton` correspondent aux noms exportés dans leurs fichiers sources.
+- Vérifier que `ArticleStatsClient` a bien accès à `apiClient.articleStats` (méthode `getArticleStats` dans api-client).
 
-- `admin/utilisateurs/[id]/page.tsx` : vue détaillée avec actions (ban, changeRole, voir articles)
-- `admin/articles/[id]/page.tsx` : vue détaillée avec modération et stats
+```bash
+grep -n "articleStats\|getArticleStats" src/lib/api-client.ts
+```
 
-### Itération 9 — Tests et validation
+### Itération 6 — Slash Commands avec @tiptap/suggestion natif
 
-- Vérifier `pnpm build` (0 erreurs TypeScript)
-- Vérifier que les re-exports `DraftsList`, `PublishedList`, `StatCardSkeleton` correspondent bien aux noms exportés dans leurs fichiers sources
-- Vérifier les types `useCategories` hook avec `CategoriesResponse`
+Actuellement, `ArticleEditor` utilise une détection manuelle du `/` (regex sur `textBefore`). Pour une intégration Tiptap native :
+
+1. Créer une extension `SlashCommand` basée sur `@tiptap/suggestion`.
+2. L'ajouter aux extensions de `useEditor`.
+3. Supprimer la détection manuelle dans `onUpdate`.
+
+Fichier : `src/components/editor/ArticleEditor.tsx`
+
+### Itération 7 — Homogénéisation AuthUser ↔ PublicUserProfile
+
+`AuthUser` dans `auth.ts` n'a pas `youtube` et `instagram` (présents dans `PublicUserProfile`). Étendre :
+
+```typescript
+// src/lib/auth.ts — ajouter :
+youtube?:    string | null
+instagram?:  string | null
+```
+
+Et mettre à jour `enrichFromPublicProfile` dans `AuthContext` pour mapper ces champs.
+
+### Itération 8 — AdminUserDetailClient — articles de l'utilisateur
+
+La section articles de l'utilisateur admin (`admin/utilisateurs/[id]`) est absente. Ajouter :
+
+```tsx
+// Utiliser apiClient.users.getUserArticles(userId) pour lister les articles
+// Afficher sous forme de liste simple avec liens vers admin/articles/[id]
+```
+
+### Itération 9 — Tests et validation finale
+
+- Vérifier que `useAuth` expose bien `refreshProfile` (typage correct).
+- Tester le flow login → enrichissement profil → affichage dans le header.
+- Vérifier que `Toaster` fonctionne depuis n'importe quel composant enfant (`useToast()`).
+- Vérifier les guards admin : `RoleGuard` avec `requiredRole="SECONDARY_ADMIN"` vs `requiredRole="PRIMARY_ADMIN"`.
 
 ### Itération 10 — Polissage final
 
-- `date-fns` : s'assurer que `date-fns` est dans `package.json` (utilisé dans `ArticleVersionHistory`)
-- `recharts` : vérifier que recharts est dans package.json (utilisé dans `AnalyticsChart`)
-- Ajouter `recharts` si manquant : `pnpm add recharts`
-- Vérifier l'export de `formatCount` dans `@/lib/utils`
+- Ajouter `refreshInterval: 5000` sur le hook `useRealTimeStats()` dans `AdminRealTimeClient` pour la mise à jour automatique.
+- `date-fns` : vérifier dans `package.json` — déjà présent (`"date-fns": "^4"`).
+- `recharts` : vérifier — déjà présent (`"recharts": "^2"`).
+- Vérifier l'export de `formatCount` dans `@/lib/utils` — ✅ déjà présent (ligne 182).
+- Vérifier que `useToast` est bien importé depuis `@/components/ui/toaster` (et non depuis `@/components/ui/toast`).
 
 ---
 
-## 📊 BILAN
+## 📊 BILAN CUMULATIF
 
-| Catégorie | Avant | Après |
-|---|---|---|
-| Fichiers vides | 66 | 0 |
-| Erreurs TypeScript estimées | 96 | ~5-10 (dépendances manquantes) |
-| Composants UI manquants | 18 | 0 |
-| Composants admin manquants | 12 | 0 |
-| Pages admin vides | 14 | 0 |
-| Pages dashboard vides | 5 | 0 |
-| Composants éditeur vides | 10 | 0 |
+| Catégorie                              | Avant iter.1 | Après iter.1 | Après iter.2 |
+|----------------------------------------|:------------:|:------------:|:------------:|
+| Fichiers vides                         | 66           | 0            | 0            |
+| Erreurs TypeScript estimées            | 96           | ~5-10        | ~2-5         |
+| Composants UI manquants                | 18           | 0            | 0            |
+| Composants admin manquants             | 12           | 0            | 0            |
+| Pages admin vides                      | 14           | 0            | 0            |
+| Pages admin détaillées (stubs)         | 2            | 2 (stubs)    | 0            |
+| Pages dashboard vides                  | 5            | 0            | 0            |
+| Violations "use client" dans page.tsx  | 0            | 5            | 0            |
+| Toaster global                         | ❌           | ❌           | ✅           |
+| AuthContext enrichissement profil      | ❌           | ❌           | ✅           |
+| SlashCommands dans ArticleEditor       | ❌           | ❌           | ✅           |
+| Dépendances Tiptap dans package.json   | ❌           | ❌           | ✅           |
+
+---
+
+## 🏗️ STRUCTURE FINALE APRÈS ITÉRATION 2
+
+### Nouveaux fichiers créés en itération 2
+
+```
+src/
+  app/
+    layout.tsx                                   ← Toaster ajouté
+    dashboard/
+      articles/page.tsx                          ← Server Component pur
+      articles/[id]/stats/page.tsx               ← Server Component pur
+      commentaires/page.tsx                      ← Server Component pur
+      abonnes/page.tsx                           ← Server Component pur
+      parametres/page.tsx                        ← Server Component pur
+    admin/
+      utilisateurs/[id]/page.tsx                 ← Server Component pur (dynamic import)
+      articles/[id]/page.tsx                     ← Server Component pur (dynamic import)
+      analytics/temps-reel/page.tsx              ← Server Component pur
+      securite/page.tsx                          ← Server Component pur (stub amélioré)
+  contexts/
+    AuthContext.tsx                              ← enrichFromPublicProfile, refreshProfile
+  components/
+    dashboard/
+      DashboardArticlesClient.tsx                ← extrait de page.tsx
+      DashboardCommentsClient.tsx                ← extrait de page.tsx
+      DashboardFollowersClient.tsx               ← extrait de page.tsx
+      DashboardSettingsClient.tsx                ← extrait + twitter/github/linkedin + refreshProfile
+      ArticleStatsClient.tsx                     ← extrait de page.tsx
+    admin/
+      AdminUserDetailClient.tsx                  ← vue détaillée utilisateur (infos + stats + ban)
+      AdminArticleDetailClient.tsx               ← vue détaillée article (modération + stats)
+      AdminRealTimeClient.tsx                    ← extrait de page.tsx
+    editor/
+      ArticleEditor.tsx                          ← SlashCommands intégrées via createPortal
+  store/
+    authStore.ts                                 ← updateProfile étendu à Partial<AuthUser>
+```
 
