@@ -2,13 +2,13 @@
 
 import useSWR from 'swr';
 import { apiClient } from '@/lib/api-client';
-import { MembersResponse } from '@/types/api';
+import { MembersResponse, RoleName } from '@/types/api';
 
 interface UseUsersParams {
   page?: number;
   limit?: number;
   search?: string;
-  role?: string;
+  role?: RoleName;
 }
 
 export function useUsers({ page = 1, limit = 20, search, role }: UseUsersParams = {}) {
@@ -20,7 +20,7 @@ export function useUsers({ page = 1, limit = 20, search, role }: UseUsersParams 
     { revalidateOnFocus: false }
   );
 
-  const changeRole = async (userId: string, newRole: string) => {
+  const changeRole = async (userId: string, newRole: RoleName) => {
     await apiClient.users.changeRole(userId, { role: newRole });
     await mutate();
   };

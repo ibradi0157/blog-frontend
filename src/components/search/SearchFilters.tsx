@@ -65,7 +65,7 @@ export function SearchFilters({
           {categories.map((cat) => (
             <button
               key={cat.id}
-              onClick={() => onCategoryChange(selectedCategory === cat.slug ? '' : cat.slug)}
+              onClick={() => onCategoryChange(selectedCategory === cat.slug ? '' : (cat.slug || ''))}
               className={cn(
                 'rounded-full px-3 py-1 text-xs font-medium transition-colors',
                 selectedCategory === cat.slug

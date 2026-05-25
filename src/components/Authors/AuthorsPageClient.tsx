@@ -31,7 +31,7 @@ export function AuthorsPageClient() {
         <div key={author.id} className="card card-hover p-5 flex flex-col gap-4">
           <div className="flex items-start gap-3">
             <Link href={`/auteurs/${author.id}`}>
-              <UserAvatar user={author} size="md" />
+              <UserAvatar user={{ ...author, displayName: author.displayName || undefined }} size="md" />
             </Link>
             <div className="flex-1 min-w-0">
               <Link href={`/auteurs/${author.id}`} className="block">

@@ -37,7 +37,7 @@ export function CommentItem({
     <div className={isReply ? 'ml-10 mt-3' : ''}>
       <div className="flex gap-3">
         <Link href={`/auteurs/${comment.author?.id ?? ""}`} className="flex-shrink-0">
-          <UserAvatar user={comment.author} size="sm" />
+          <UserAvatar user={{ ...comment.author!, displayName: comment.author?.displayName || undefined }} size="sm" />
         </Link>
 
         <div className="flex-1 min-w-0">

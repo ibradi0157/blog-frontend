@@ -72,7 +72,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             {results.map((article) => (
               <button
                 key={article.id}
-                onClick={() => handleArticleClick(article.slug)}
+                onClick={() => handleArticleClick(article.slug ?? '')}
                 className="w-full text-left px-4 py-3 hover:bg-[var(--bg-hover)] transition-colors"
               >
                 <p className="text-sm font-medium text-[var(--text-primary)] line-clamp-1 mb-1">

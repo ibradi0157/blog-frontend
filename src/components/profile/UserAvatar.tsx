@@ -3,7 +3,7 @@ import { cn } from '@/lib/cn'
 
 interface AvatarUser {
   email:       string
-  username?:   string
+  username?:   string | null
   displayName?: string
   avatarUrl?:  string | null
 }

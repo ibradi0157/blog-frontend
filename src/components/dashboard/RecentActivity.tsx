@@ -19,6 +19,12 @@ const iconMap: Record<NotificationType, { icon: typeof Heart; color: string }> =
   FOLLOW: { icon: Users, color: 'text-[var(--success)]' },
   NEW_ARTICLE: { icon: Eye, color: 'text-[var(--warning)]' },
   NEWSLETTER: { icon: Eye, color: 'text-[var(--warning)]' },
+  article_published: { icon: Eye, color: 'text-[var(--warning)]' },
+  comment_added: { icon: MessageSquare, color: 'text-[var(--accent)]' },
+  comment_reply: { icon: MessageSquare, color: 'text-[var(--accent)]' },
+  like_received: { icon: Heart, color: 'text-red-400' },
+  follow: { icon: Users, color: 'text-[var(--success)]' },
+  mention: { icon: MessageSquare, color: 'text-[var(--accent)]' },
 };
 
 interface RecentActivityProps {

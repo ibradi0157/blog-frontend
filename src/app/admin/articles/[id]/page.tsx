@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 
 const AdminArticleDetailClient = dynamic(
   () => import('@/components/admin/AdminArticleDetailClient').then(m => m.AdminArticleDetailClient),
-  { loading: () => <PageLoader />, ssr: false }
+  { loading: () => <PageLoader /> }
 );
 
 interface Props { params: Promise<{ id: string }> }

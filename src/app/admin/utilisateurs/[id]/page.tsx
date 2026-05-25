@@ -23,5 +23,5 @@ export default async function AdminUserDetailPage({ params }: Props) {
 import dynamic from 'next/dynamic';
 const AdminUserDetailClient = dynamic(
   () => import('@/components/admin/AdminUserDetailClient').then(m => m.AdminUserDetailClient),
-  { loading: () => <PageLoader />, ssr: false }
+  { loading: () => <PageLoader /> }
 );

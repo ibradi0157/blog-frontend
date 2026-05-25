@@ -9,7 +9,7 @@ const COMMENTS_KEY = (articleId: string) => `/comments/article/${articleId}`;
 export function useComments(articleId: string) {
   const { data, error, isLoading, mutate: revalidate } = useSWR<CommentsListResponse>(
     articleId ? COMMENTS_KEY(articleId) : null,
-    () => apiClient.comments.getByArticle(articleId),
+    () => apiClient.comments.getForArticle(articleId),
     { revalidateOnFocus: false }
   );
 
@@ -30,14 +30,14 @@ export function useComments(articleId: string) {
     await revalidate();
   };
 
-  const likeComment = async (commentId: string) => {
-    const result = await apiClient.comments.like(commentId);
+  const likeComment = async (commentId: string, isLike: boolean = true) => {
+    const result = await apiClient.comments.like(commentId, { isLike });
     await revalidate();
     return result;
   };
 
   const reportComment = async (commentId: string, reason: string) => {
-    await apiClient.comments.report(commentId, { reason });
+    await apiClient.comments.report(commentId, reason);
   };
 
   return {

@@ -23,7 +23,7 @@ export function SearchPageClient() {
 
   const { data, isLoading } = useSWR<PublicArticlesResponse>(
     swrKey,
-    () => apiClient.articles.getPublic({ search: q, category, page, limit: LIMIT }),
+    () => apiClient.articles.getPublic({ search: q, categoryId: category, page, limit: LIMIT }),
     { revalidateOnFocus: false, keepPreviousData: true }
   );
 

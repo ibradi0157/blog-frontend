@@ -7,21 +7,22 @@ import { useNotificationStore } from '@/store/notificationStore';
 
 export function useNotifications(page = 1, limit = 20) {
   const { markRead, markAllRead } = useNotificationStore();
+  const offset = (page - 1) * limit;
 
   const { data, isLoading, error, mutate } = useSWR<NotificationsResponse>(
-    `/notifications?page=${page}&limit=${limit}`,
-    () => apiClient.notifications.getAll({ page, limit }),
+    `/notifications?offset=${offset}&limit=${limit}`,
+    () => apiClient.notifications.getAll({ offset, limit }),
     { revalidateOnFocus: true }
   );
 
   const handleMarkRead = async (id: string) => {
-    await apiClient.notifications.markRead(id);
+    await apiClient.notifications.markAsRead(id);
     markRead(id);
     await mutate();
   };
 
   const handleMarkAllRead = async () => {
-    await apiClient.notifications.markAllRead();
+    await apiClient.notifications.markAllAsRead();
     markAllRead();
     await mutate();
   };

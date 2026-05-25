@@ -7,7 +7,10 @@ import { AnalyticsOverview, TimeSeriesResponse, RealTimeStats } from '@/types/ap
 export function useAnalyticsOverview() {
   const { data, isLoading, error } = useSWR<AnalyticsOverview>(
     '/analytics/overview',
-    () => apiClient.analytics.getOverview(),
+    async () => {
+      const response = await apiClient.analytics.getOverview();
+      return response?.data || response;
+    },
     { refreshInterval: 60_000 }
   );
   return { overview: data, isLoading, error };

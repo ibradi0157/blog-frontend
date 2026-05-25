@@ -32,16 +32,16 @@ export function ProfileHeader({ profile, followersCount = 0, totalViews = 0 }: P
         {/* Avatar overlapping cover */}
         <div className="flex items-end justify-between -mt-10 mb-4">
           <div className="ring-4 ring-[var(--bg-card)] rounded-full">
-            <UserAvatar user={profile} size="xl" />
+            <UserAvatar user={{ ...profile, displayName: profile.displayName || undefined }} size="xl" />
           </div>
           <FollowButton authorId={profile.id} />
         </div>
 
         <div className="space-y-2">
           <h1 className="text-xl font-bold text-[var(--text-primary)]">
-            {profile.displayName ?? profile.username}
+            {profile.displayName || profile.username || 'Utilisateur'}
           </h1>
-          {profile.username && (
+          {(profile.username) && (
             <p className="text-sm text-[var(--text-muted)]">@{profile.username}</p>
           )}
           {profile.bio && (

@@ -36,7 +36,7 @@ export function AuthorsSection({ authors }: AuthorsSectionProps) {
               href={ROUTES.AUTHOR(author.id)}
               className="card card-hover group flex items-start gap-4 p-5"
             >
-              <UserAvatar user={author} size="md" />
+              <UserAvatar user={{ ...author, displayName: author.displayName || undefined }} size="md" />
               <div className="min-w-0 flex-1">
                 <p className="truncate font-semibold text-sm text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
                   {author.displayName}

@@ -107,7 +107,7 @@ export function track(params: TrackParams): void {
     articleId:  params.articleId,
     categoryId: params.categoryId,
     url:        params.url  ?? window.location.href,
-    referrer:   params.referrer ?? document.referrer || undefined,
+    referrer:   (params.referrer ?? document.referrer) || undefined,
     value:      params.value,
     metadata:   params.metadata,
   }

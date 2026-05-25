@@ -17,8 +17,8 @@ export function CategoryPageClient({ slug }: CategoryPageClientProps) {
   const LIMIT = 12;
 
   const { data, isLoading } = useSWR<PublicArticlesResponse>(
-    `/articles/public?category=${slug}&page=${page}`,
-    () => apiClient.articles.getPublic({ category: slug, page, limit: LIMIT }),
+    `/articles/public?categoryId=${slug}&page=${page}`,
+    () => apiClient.articles.getPublic({ categoryId: slug, page, limit: LIMIT }),
     { revalidateOnFocus: false }
   );
 

@@ -19,7 +19,7 @@ export function useBookmarks() {
 
   return {
     bookmarks: data?.data ?? [],
-    total: data?.total ?? 0,
+    total: data?.data?.length ?? 0,
     isLoading,
     isBookmarked,
     revalidate: mutate,

@@ -49,7 +49,7 @@ export function CommentActions({
         )}
       >
         <ThumbsUp size={13} className={liking ? 'animate-pulse' : ''} />
-        {comment.likesCount > 0 && <span>{comment.likesCount}</span>}
+        {(comment.likesCount ?? 0) > 0 && <span>{comment.likesCount}</span>}
       </button>
 
       {isAuthenticated && (
