@@ -33,9 +33,17 @@ export interface JwtPayload {
 }
 
 export interface AuthUser {
-  id:    string
-  email: string
-  role:  RoleName
+  id:           string
+  email:        string
+  role:         RoleName
+  displayName?: string
+  username?:    string | null
+  avatarUrl?:   string | null
+  bio?:         string | null
+  website?:     string | null
+  twitter?:     string | null
+  github?:      string | null
+  linkedin?:    string | null
 }
 
 // ─────────────────────────────────────────────

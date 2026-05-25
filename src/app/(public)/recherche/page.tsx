@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { Metadata } from 'next';
-import { SearchPageClient } from './SearchPageClient';
+import { SearchPageClient } from '@/components/search/SearchPageClient';
 import { PageWrapper } from '@/components/layout/PageWrapper';
 import { PageLoader } from '@/components/ui/loading-spinner';
 

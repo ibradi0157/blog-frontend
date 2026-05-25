@@ -143,9 +143,19 @@ export interface User {
 export interface PublicUserProfile {
   id: string;
   displayName: string;
+  username?: string | null;
   email: string;
   avatarUrl?: string | null;
+  coverUrl?: string | null;
   bio?: string | null;
+  website?: string | null;
+  twitter?: string | null;
+  github?: string | null;
+  linkedin?: string | null;
+  youtube?: string | null;
+  instagram?: string | null;
+  articlesCount?: number;
+  totalViews?: number;
   role: Role;
   createdAt: string;
 }
@@ -179,8 +189,12 @@ export interface ChangeRoleDto {
 export interface AuthorListItem {
   id: string;
   displayName: string;
+  username?: string | null;
   email: string;
+  avatarUrl?: string | null;
   profilePicture?: string | null;
+  bio?: string | null;
+  followersCount?: number;
   createdAt: string;
   articlesCount: number;
   totalViews: number;
@@ -272,7 +286,11 @@ export interface Category {
 }
 
 /** GET /categories */
-export type CategoriesResponse = Category[];
+export interface CategoriesResponse {
+  success?: boolean;
+  data: Category[];
+  total?: number;
+}
 
 /** POST /categories */
 export interface CreateCategoryDto {
@@ -324,15 +342,20 @@ export interface ArticleSummary {
   excerpt?: string | null;
   coverUrl?: string | null;
   tags?: string[] | null;
+  status?: 'draft' | 'published' | 'archived' | 'scheduled';
   isPublished: boolean;
   publishedAt?: string | null;
   isFeatured: boolean;
+  viewsCount?: number;
   authorId?: string | null;
   author?: ArticleAuthor | null;
   category?: Category | null;
   createdAt: string;
   updatedAt: string;
 }
+
+/** Alias public — même shape qu'ArticleSummary */
+export type PublicArticle = ArticleSummary;
 
 /** POST /articles */
 export interface CreateArticleDto {
@@ -476,6 +499,7 @@ export interface AdminArticlesQuery {
 export interface CommentAuthor {
   id: string;
   displayName: string;
+  username?: string | null;
   avatarUrl?: string | null;
   email: string;
 }
@@ -486,10 +510,14 @@ export interface Comment {
   isEdited: boolean;
   likes: number;
   dislikes: number;
+  likesCount?: number;
+  isLiked?: boolean;
+  authorId?: string;
   authorTag: string;
   author: CommentAuthor;
   articleId?: string;
   parentId?: string | null;
+  replies?: Comment[];
   children?: Comment[];
   createdAt: string;
   updatedAt: string;
@@ -559,7 +587,14 @@ export type NotificationType =
   | 'comment_reply'
   | 'like_received'
   | 'follow'
-  | 'mention';
+  | 'mention'
+  // Legacy / composants existants
+  | 'LIKE_ARTICLE'
+  | 'LIKE_COMMENT'
+  | 'COMMENT'
+  | 'FOLLOW'
+  | 'NEW_ARTICLE'
+  | 'NEWSLETTER';
 
 export interface Notification {
   id: string;
@@ -671,13 +706,31 @@ export interface FollowedAuthorsResponse {
 /** GET /user-preferences/article/:articleId/liked */
 export interface ArticleLikedStatusResponse {
   success: boolean;
-  data: { isLiked: boolean };
+  isLiked?: boolean;
+  likeType?: string;
+  data?: { isLiked: boolean; likeType?: string };
 }
 
 /** GET /user-preferences/author/:authorId/followed */
 export interface AuthorFollowedStatusResponse {
   success: boolean;
   data: { isFollowed: boolean };
+}
+
+// ─────────────────────────────────────────────
+// USER PROFILE UPDATE
+// ─────────────────────────────────────────────
+
+/** PATCH /users/me/profile */
+export interface UpdateProfileDto {
+  displayName?: string;
+  bio?: string | null;
+  website?: string | null;
+  twitter?: string | null;
+  github?: string | null;
+  linkedin?: string | null;
+  youtube?: string | null;
+  instagram?: string | null;
 }
 
 // ─────────────────────────────────────────────

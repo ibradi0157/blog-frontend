@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { Eye, FileText, Heart, Users } from 'lucide-react';
 import { StatCard, StatCardSkeleton } from '@/components/dashboard/StatCard';
 import { RecentActivity } from '@/components/dashboard/RecentActivity';
-import { DashboardStatsClient } from './DashboardStatsClient';
+import { DashboardStatsClient } from '@/components/dashboard/DashboardStatsClient';
 
 export const metadata = { title: 'Dashboard — Mon espace auteur' };
 

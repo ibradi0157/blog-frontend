@@ -19,15 +19,17 @@ const TYPE_CONFIG: Record<NotificationType, { icon: React.ElementType; color: st
 interface NotificationItemProps {
   notification: Notification
   onClose?:     () => void
+  onRead?:      (id: string) => void
 }
 
-export function NotificationItem({ notification, onClose }: NotificationItemProps) {
+export function NotificationItem({ notification, onClose, onRead }: NotificationItemProps) {
   const { markRead } = useNotificationStore()
   const cfg = TYPE_CONFIG[notification.type] ?? { icon: Bell, color: 'text-[var(--text-secondary)]', label: '' }
   const Icon = cfg.icon
 
   const handleClick = () => {
     if (!notification.isRead) markRead(notification.id)
+      onRead?.(notification.id)
     onClose?.()
   }
 

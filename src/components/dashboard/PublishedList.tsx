@@ -1,0 +1,1 @@
+export { PublishedList } from './ArticlesTable';

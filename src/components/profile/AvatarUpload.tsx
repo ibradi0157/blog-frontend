@@ -35,10 +35,9 @@ export function AvatarUpload({ onSuccess, className }: AvatarUploadProps) {
     setUploading(true);
 
     try {
-      const formData = new FormData();
-      formData.append('avatar', file);
-      const result = await apiClient.users.uploadAvatar(formData);
-      onSuccess?.(result.avatarUrl);
+      if (!user?.id) return;
+      const result = await apiClient.users.uploadAvatar(user.id, file);
+      onSuccess?.(result.data?.avatarUrl ?? '');
     } catch {
       setError('Échec de l\'upload. Réessayez.');
     } finally {

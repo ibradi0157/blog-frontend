@@ -46,7 +46,7 @@ export function ArticlesPageClient() {
   useEffect(() => {
     categoriesApi
       .getAll()
-      .then((res) => setCategories(res ?? []))
+      .then((res) => setCategories(res?.data ?? []))
       .catch(() => {});
   }, []);
 

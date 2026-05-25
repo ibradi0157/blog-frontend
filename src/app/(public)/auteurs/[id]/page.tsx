@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { Suspense } from 'next';
+import { Suspense } from 'react';
 import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { ArticleGrid } from '@/components/articles/ArticleGrid';
 import { PageWrapper } from '@/components/layout/PageWrapper';

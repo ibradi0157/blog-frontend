@@ -39,7 +39,7 @@ export function CategoryPageClient({ slug }: CategoryPageClientProps) {
         <>
           <ArticleGrid articles={articles} />
           {totalPages > 1 && (
-            <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+            <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
           )}
         </>
       )}

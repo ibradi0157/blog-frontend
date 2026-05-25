@@ -65,7 +65,7 @@ export function SearchResults({
 
       {totalPages > 1 && (
         <Pagination
-          currentPage={page}
+          page={page}
           totalPages={totalPages}
           onPageChange={onPageChange}
         />

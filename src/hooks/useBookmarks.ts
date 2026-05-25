@@ -35,5 +35,8 @@ export function useArticleLikedStatus(articleId: string) {
     { revalidateOnFocus: false }
   );
 
-  return { isLiked: data?.isLiked ?? false, likeType: data?.likeType };
+  return {
+    isLiked: data?.isLiked ?? data?.data?.isLiked ?? false,
+    likeType: data?.likeType ?? data?.data?.likeType,
+  };
 }

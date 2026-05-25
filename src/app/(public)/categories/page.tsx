@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { PageWrapper } from '@/components/layout/PageWrapper';
-import { CategoryPageClient } from './CategoryPageClient';
+import { CategoryPageClient } from '@/components/category/CategoryPageClient';
 import { PageLoader } from '@/components/ui/loading-spinner';
 import { apiClient } from '@/lib/api-client';
 

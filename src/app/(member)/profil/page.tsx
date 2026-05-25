@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { AuthGuard } from '@/components/auth/AuthGuard';
 import { PageWrapper } from '@/components/layout/PageWrapper';
-import { ProfilPageClient } from './ProfilPageClient';
+import { ProfilPageClient } from '@/components/profile/ProfilPageClient';
 
 export const metadata: Metadata = {
   title: 'Mon profil — Blog',

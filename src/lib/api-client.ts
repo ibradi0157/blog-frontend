@@ -34,6 +34,7 @@ import type {
   MembersResponse,
   UserArticlesResponse,
   ChangeRoleDto,
+  UpdateProfileDto,
   // Authors
   AuthorsResponse,
   AuthorProfileResponse,
@@ -494,6 +495,20 @@ export const usersApi = {
    */
   changeRole: (id: string, dto: ChangeRoleDto) =>
     http.patch<ApiResponse<User>>(`/users/${id}/role`, { body: dto }),
+
+  /**
+   * PATCH /users/me/profile
+   * Met à jour le profil de l'utilisateur connecté.
+   */
+  updateProfile: (dto: UpdateProfileDto) =>
+    http.patch<ApiResponse<User>>('/users/me/profile', { body: dto }),
+
+  /**
+   * PATCH /users/:id/ban
+   * Bannir un utilisateur. Réservé admins.
+   */
+  ban: (id: string) =>
+    http.patch<ApiResponse<User>>(`/users/${id}/ban`),
 
   /**
    * DELETE /users/:id
@@ -1093,6 +1108,19 @@ export const subscriptionsApi = {
       { noAuth: true }
     ),
 
+  /** Alias checkFollowing → checkFollowingAuthor (pour useFollow.ts) */
+  checkFollowing: (authorId: string) =>
+    http.get<CheckFollowingResponse>(
+      `/subscriptions/check/author/${authorId}`
+    ),
+
+  /** Alias followerCount → getFollowerCount (pour useFollow.ts) */
+  followerCount: (authorId: string) =>
+    http.get<FollowerCountResponse>(
+      `/subscriptions/followers/author/${authorId}`,
+      { noAuth: true }
+    ),
+
   // ── Raccourcis subscribe/unsubscribe catégorie ────────────────────────────
 
   /** POST /subscriptions/follow/category/:categoryId */
@@ -1231,14 +1259,18 @@ export const analyticsApi = {
    * GET /analytics/timeseries
    * Données de série temporelle. Réservé admins.
    */
-  getTimeSeries: (params: {
+  getTimeSeries: (periodOrParams: '7d' | '30d' | '90d' | {
     metric: string
     startDate?: string
     endDate?: string
     granularity?: 'hour' | 'day' | 'week' | 'month'
   }) =>
     http.get<TimeSeriesResponse>(
-      `/analytics/timeseries${buildQuery(params as Record<string, unknown>)}`
+      `/analytics/timeseries${buildQuery(
+        typeof periodOrParams === 'string'
+          ? { period: periodOrParams }
+          : periodOrParams as Record<string, unknown>
+      )}`
     ),
 
   /**
@@ -1428,5 +1460,8 @@ const api = {
   legal:            legalApi,
   health:           healthApi,
 } as const
+
+/** Named alias — pour les composants qui préfèrent `import { apiClient }` */
+export const apiClient = api
 
 export default api

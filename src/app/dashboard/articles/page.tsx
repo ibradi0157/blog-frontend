@@ -7,7 +7,7 @@ import { useArticles } from '@/hooks/useArticles';
 import { ArticlesTable } from '@/components/dashboard/ArticlesTable';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { ROUTES } from '@/lib/constants';
-import { api } from '@/lib/api-client';
+import api from '@/lib/api-client';
 import { cn } from '@/lib/cn';
 
 type Tab = 'all' | 'published' | 'draft';
