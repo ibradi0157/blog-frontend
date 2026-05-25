@@ -27,7 +27,7 @@ export function ReportModal({ onConfirm, onClose }: ReportModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-0 overlay-backdrop backdrop-blur-sm" onClick={onClose} />
       <div className="card relative z-10 w-full max-w-sm p-6 animate-fade-in">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-[var(--text-primary)]">Signaler le commentaire</h3>

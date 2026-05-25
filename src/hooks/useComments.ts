@@ -31,9 +31,8 @@ export function useComments(articleId: string) {
   };
 
   const likeComment = async (commentId: string, isLike: boolean = true) => {
-    const result = await apiClient.comments.like(commentId, { isLike });
+    await apiClient.likes.likeComment(commentId, isLike);
     await revalidate();
-    return result;
   };
 
   const reportComment = async (commentId: string, reason: string) => {

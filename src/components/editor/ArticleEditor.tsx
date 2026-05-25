@@ -154,7 +154,7 @@ export function ArticleEditor({
   const [slashMenuPos, setSlashMenuPos] = useState({ top: 0, left: 0 });
   const slashRef = useRef<any>(null);
 
-  const autosaveTimer = useRef<NodeJS.Timeout>();
+  const autosaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const contentRef = useRef(initialContent);
 
   const slashCallbacks = {
@@ -360,7 +360,7 @@ export function ArticleEditor({
         {/* Image upload popup */}
         {showImageUpload && articleId && (
           <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setShowImageUpload(false)}>
-            <div className="absolute inset-0 bg-black/50" />
+            <div className="absolute inset-0 overlay-backdrop" />
             <div className="relative z-10 bg-[var(--bg-primary)] border border-[var(--border)] rounded-2xl shadow-2xl" onClick={(e) => e.stopPropagation()}>
               <EditorImageUpload
                 articleId={articleId}

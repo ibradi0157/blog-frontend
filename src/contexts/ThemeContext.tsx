@@ -6,13 +6,10 @@
  * Provider pour le thème dark/light de l'application.
  *
  * Comportement :
- *  1. Au démarrage, lit le thème depuis localStorage
- *  2. Si absent, utilise la préférence système (prefers-color-scheme)
- *  3. Ajoute/retire la classe "dark" sur <html> (compatible Tailwind dark:)
+ *  1. ThemeScript applique le thème avant le premier paint (anti-FOUC)
+ *  2. Au montage, lit le thème depuis localStorage
+ *  3. Ajoute/retire la classe "dark" sur <html>
  *  4. Persiste le choix dans localStorage
- *
- * Le thème par défaut vient idéalement de GET /site-settings
- * (géré dans le root layout avant le rendu client).
  */
 
 import React, {
@@ -69,7 +66,7 @@ function readStoredTheme(): Theme {
   if (stored === 'dark' || stored === 'light' || stored === 'system') {
     return stored
   }
-  return 'dark' // défaut du design system
+  return 'dark'
 }
 
 function applyTheme(resolved: 'dark' | 'light'): void {
@@ -79,6 +76,7 @@ function applyTheme(resolved: 'dark' | 'light'): void {
   } else {
     root.classList.remove('dark')
   }
+  root.style.colorScheme = resolved
 }
 
 // ─────────────────────────────────────────────
@@ -99,12 +97,15 @@ export function ThemeProvider({
   defaultTheme = 'dark',
 }: ThemeProviderProps) {
   const [theme, setThemeState] = useState<Theme>(defaultTheme)
+  const [resolvedTheme, setResolvedTheme] = useState<'dark' | 'light'>('dark')
 
-  // ── Hydratation depuis localStorage ──────────────────────────────────────
+  // ── Hydratation depuis localStorage + sync DOM (ThemeScript) ───────────────
   useEffect(() => {
     const stored = readStoredTheme()
+    const resolved = resolveTheme(stored)
     setThemeState(stored)
-    applyTheme(resolveTheme(stored))
+    setResolvedTheme(resolved)
+    applyTheme(resolved)
   }, [])
 
   // ── Écoute des changements de préférence système ──────────────────────────
@@ -113,7 +114,9 @@ export function ThemeProvider({
 
     const mq = window.matchMedia('(prefers-color-scheme: dark)')
     const handler = (e: MediaQueryListEvent) => {
-      applyTheme(e.matches ? 'dark' : 'light')
+      const resolved = e.matches ? 'dark' : 'light'
+      setResolvedTheme(resolved)
+      applyTheme(resolved)
     }
     mq.addEventListener('change', handler)
     return () => mq.removeEventListener('change', handler)
@@ -121,17 +124,18 @@ export function ThemeProvider({
 
   // ── setTheme ──────────────────────────────────────────────────────────────
   const setTheme = useCallback((next: Theme) => {
+    const resolved = resolveTheme(next)
     setThemeState(next)
+    setResolvedTheme(resolved)
     localStorage.setItem(STORAGE_KEYS.THEME, next)
-    applyTheme(resolveTheme(next))
+    applyTheme(resolved)
   }, [])
 
   // ── toggleTheme ───────────────────────────────────────────────────────────
   const toggleTheme = useCallback(() => {
-    setTheme(resolveTheme(theme) === 'dark' ? 'light' : 'dark')
+    const current = resolveTheme(theme)
+    setTheme(current === 'dark' ? 'light' : 'dark')
   }, [theme, setTheme])
-
-  const resolvedTheme = resolveTheme(theme)
 
   return (
     <ThemeContext.Provider

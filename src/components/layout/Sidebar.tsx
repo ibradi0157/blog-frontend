@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/cn'
 import { ROUTES } from '@/lib/constants'
 import { useAuth } from '@/contexts/AuthContext'
+import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import {
   LayoutDashboard, FileText, MessageSquare, Users, Bell,
   Settings, BarChart2, Plus, Shield, Globe, Mail, Home,
@@ -32,15 +33,15 @@ const DASHBOARD_NAV: NavSection[] = [
   {
     title: 'Contenu',
     items: [
-      { href: ROUTES.DASHBOARDArticles, icon: FileText,        label: 'Mes articles'   },
+      { href: ROUTES.DASHBOARD_ARTICLES, icon: FileText,        label: 'Mes articles'   },
       { href: ROUTES.DASHBOARD_NEW_ARTICLE,        icon: Plus,            label: 'Nouvel article' },
-      { href: ROUTES.DASHBOARDComments, icon: MessageSquare,   label: 'Commentaires'   },
+      { href: ROUTES.DASHBOARD_COMMENTS, icon: MessageSquare,   label: 'Commentaires'   },
     ],
   },
   {
     title: 'Communauté',
     items: [
-      { href: ROUTES.DASHBOARDFollowers, icon: Users,          label: 'Abonnés'        },
+      { href: ROUTES.DASHBOARD_SUBSCRIBERS, icon: Users,          label: 'Abonnés'        },
       { href: ROUTES.NOTIFICATIONS,      icon: Bell,           label: 'Notifications'  },
     ],
   },
@@ -153,6 +154,10 @@ export function Sidebar({ variant = 'dashboard' }: SidebarProps) {
           </div>
         ))}
       </nav>
+
+      <div className="px-3 py-4 border-t border-[var(--border)]">
+        <ThemeToggle showLabel />
+      </div>
     </aside>
   )
 }

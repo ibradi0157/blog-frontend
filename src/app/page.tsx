@@ -18,7 +18,7 @@ export default function HomePage() {
             <div
               className="absolute inset-0 -z-10"
               style={{
-                background: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(91,140,255,.15) 0%, transparent 70%)',
+                background: `radial-gradient(ellipse 80% 60% at 50% -10%, var(--hero-glow) 0%, transparent 70%)`,
               }}
             />
 

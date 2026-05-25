@@ -7,10 +7,11 @@ import { UserRoleSelect } from './UserRoleSelect';
 import { UserAvatar } from '@/components/profile/UserAvatar';
 import { formatDate } from '@/lib/utils';
 import { cn } from '@/lib/cn';
+import type { RoleName } from '@/types/api';
 
 export function UsersTable() {
   const [search, setSearch] = useState('');
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState<RoleName | ''>('');
   const [page, setPage] = useState(1);
 
   const { users, total, isLoading, banUser } = useUsers({ page, limit: 20, search: search || undefined, role: role || undefined });
@@ -30,7 +31,7 @@ export function UsersTable() {
         </div>
         <select
           value={role}
-          onChange={(e) => { setRole(e.target.value); setPage(1); }}
+          onChange={(e) => { setRole(e.target.value as RoleName | ''); setPage(1); }}
           className="px-3 py-2 text-sm rounded-lg bg-[var(--bg-secondary)] border border-[var(--border)] text-[var(--text-primary)] focus:outline-none"
         >
           <option value="">Tous les rôles</option>

@@ -4,6 +4,7 @@ import './globals.css'
 import { AuthProvider }         from '@/contexts/AuthContext'
 import { NotificationProvider } from '@/contexts/NotificationContext'
 import { ThemeProvider }         from '@/contexts/ThemeContext'
+import { ThemeScript }           from '@/components/theme/ThemeScript'
 import { Toaster }               from '@/components/ui/toaster'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
@@ -22,8 +23,10 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#0B0D10',
-  colorScheme: 'dark',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#F4F6F9' },
+    { media: '(prefers-color-scheme: dark)',  color: '#0B0D10' },
+  ],
 }
 
 export default function RootLayout({
@@ -32,10 +35,11 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${geistSans.variable} ${geistMono.variable} dark`}
+      className={`${geistSans.variable} ${geistMono.variable}`}
       suppressHydrationWarning
     >
       <body className="min-h-dvh flex flex-col antialiased">
+        <ThemeScript />
         <ThemeProvider>
           <AuthProvider>
             <NotificationProvider>

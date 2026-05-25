@@ -31,7 +31,7 @@ export function useArticleLikedStatus(articleId: string) {
 
   const { data } = useSWR<ArticleLikedStatusResponse>(
     isAuthenticated && articleId ? `/user-preferences/article/${articleId}/liked` : null,
-    () => apiClient.userPreferences.getArticleLikedStatus(articleId),
+    () => apiClient.userPreferences.isArticleLiked(articleId),
     { revalidateOnFocus: false }
   );
 

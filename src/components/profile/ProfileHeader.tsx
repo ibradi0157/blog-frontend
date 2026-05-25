@@ -13,13 +13,15 @@ interface ProfileHeaderProps {
 }
 
 export function ProfileHeader({ profile, followersCount = 0, totalViews = 0 }: ProfileHeaderProps) {
+  const coverSrc = profile.coverUrl ? resolveImageUrl(profile.coverUrl) : undefined;
+
   return (
     <div className="card overflow-hidden">
       {/* Cover */}
       <div className="relative h-36 bg-gradient-to-br from-[var(--accent-muted)] to-[var(--bg-hover)]">
-        {profile.coverUrl && (
+        {coverSrc && (
           <Image
-            src={resolveImageUrl(profile.coverUrl)}
+            src={coverSrc}
             alt="Couverture profil"
             fill
             className="object-cover"
@@ -59,10 +61,10 @@ export function ProfileHeader({ profile, followersCount = 0, totalViews = 0 }: P
 
           {(profile.website || profile.twitter || profile.github || profile.linkedin) && (
             <SocialLinks
-              website={profile.website}
-              twitter={profile.twitter}
-              github={profile.github}
-              linkedin={profile.linkedin}
+              website={profile.website ?? undefined}
+              twitter={profile.twitter ?? undefined}
+              github={profile.github ?? undefined}
+              linkedin={profile.linkedin ?? undefined}
               className="mt-2"
             />
           )}

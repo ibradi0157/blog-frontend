@@ -18,10 +18,10 @@ export function AnalyticsOverview() {
   const [period, setPeriod] = useState<'7d' | '30d' | '90d'>('30d');
 
   const stats = [
-    { title: 'Articles', value: formatCount(overview?.totalArticles ?? 0), icon: <FileText size={18} /> },
-    { title: 'Vues totales', value: formatCount(overview?.totalViews ?? 0), icon: <Eye size={18} /> },
+    { title: 'Pages vues', value: formatCount(overview?.totalPageViews ?? 0), icon: <FileText size={18} /> },
+    { title: 'Vues articles', value: formatCount(overview?.totalArticleViews ?? 0), icon: <Eye size={18} /> },
     { title: 'Likes', value: formatCount(overview?.totalLikes ?? 0), icon: <Heart size={18} /> },
-    { title: 'Abonnés', value: formatCount(overview?.totalFollowers ?? 0), icon: <Users size={18} /> },
+    { title: 'Visiteurs uniques', value: formatCount(overview?.uniqueVisitors ?? 0), icon: <Users size={18} /> },
   ];
 
   return (

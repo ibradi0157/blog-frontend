@@ -25,7 +25,9 @@ export function generateMetadata({ params }: LegalPageProps): Metadata {
 export default async function LegalPage({ params }: LegalPageProps) {
   let page;
   try {
-    page = await apiClient.legal.getBySlug(params.slug);
+    const response = await apiClient.legal.getBySlug(params.slug);
+    page = response.data;
+    if (!page) notFound();
   } catch {
     notFound();
   }

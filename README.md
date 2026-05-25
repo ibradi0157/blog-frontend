@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Blog Frontend
 
-## Getting Started
+Frontend Next.js 16 d'une plateforme de blog communautaire (interface en français). Il consomme une **API REST NestJS** et des **notifications Socket.IO** — il ne fonctionne pas seul sans backend.
 
-First, run the development server:
+## Démarrage en 3 étapes
 
 ```bash
+npm install
+copy .env.example .env.local   # Windows — ou: cp .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Frontend : [http://localhost:3000](http://localhost:3000)
+- Backend attendu par défaut : `http://localhost:3001` (variable `NEXT_PUBLIC_API_URL`)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Documentation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Document | Contenu |
+|----------|---------|
+| **[docs/GUIDE-DEVELOPPEUR.md](docs/GUIDE-DEVELOPPEUR.md)** | Architecture du site, auth, rôles, où modifier le code, **connexion backend**, CORS, dépannage |
+| **[.env.example](.env.example)** | Variables d'environnement à copier vers `.env.local` |
 
-## Learn More
+## Stack
 
-To learn more about Next.js, take a look at the following resources:
+- Next.js 16 (App Router) · React 19 · TypeScript
+- Tailwind CSS 4 · SWR · Zustand · TipTap · Socket.IO client
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Commande | Description |
+|----------|-------------|
+| `npm run dev` | Développement |
+| `npm run build` | Build production |
+| `npm start` | Serveur production |
+| `npm run line` | ESLint |
 
-## Deploy on Vercel
+## Connexion backend (résumé)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Lancer l'API NestJS compatible (port `3001` ou autre).
+2. Configurer `.env.local` :
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001
+NEXT_PUBLIC_WS_URL=http://localhost:3001
+```
+
+3. Activer **CORS** sur l'API pour `http://localhost:3000`.
+4. Vérifier : `curl http://localhost:3001/health`
+
+Détails, liste des routes, formats JSON et checklist : **[docs/GUIDE-DEVELOPPEUR.md](docs/GUIDE-DEVELOPPEUR.md)**.

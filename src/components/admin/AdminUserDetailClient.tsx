@@ -122,7 +122,7 @@ export function AdminUserDetailClient({ userId }: AdminUserDetailClientProps) {
 function UserArticlesList({ userId }: { userId: string }) {
   const { data, isLoading } = useSWR(
     `/users/${userId}/articles`,
-    () => (apiClient.users as any).getUserArticles?.(userId) ?? apiClient.articles.getPublic({ authorId: userId, limit: 10 })
+    () => apiClient.users.getUserArticles(userId, { limit: 10 })
   );
   const articles: any[] = (data as any)?.data ?? (data as any)?.articles ?? [];
 

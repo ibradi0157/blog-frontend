@@ -18,7 +18,7 @@ export function AdminArticleDetailClient({ articleId }: AdminArticleDetailClient
 
   const { data, mutate, isLoading } = useSWR(
     `/articles/${articleId}`,
-    () => apiClient.articles.getById(articleId)
+    () => apiClient.adminArticles.getOne(articleId)
   );
 
   const article = (data as any)?.data ?? (data as any);

@@ -2,33 +2,41 @@
 
 /* ─────────────────────────────────────────────
    Design tokens — Blog Platform
-   Dark-first, accent bleu électrique
+   Thème clair par défaut, sombre via .dark sur <html>
 ───────────────────────────────────────────── */
 
 :root {
+  color-scheme: light;
+
   /* Fond & surfaces */
-  --bg-base:    #0B0D10;
-  --bg-card:    #13161B;
-  --bg-hover:   #1A1E25;
+  --bg-base:       #F4F6F9;
+  --bg-card:       #FFFFFF;
+  --bg-hover:      #E8ECF2;
+  --bg-secondary:  #EEF1F6;
+  --bg-primary:    #FFFFFF;
 
   /* Texte */
-  --text-primary:   #F5F7FA;
-  --text-secondary: #8B95A3;
-  --text-muted:     #4A5260;
+  --text-primary:   #0B0D10;
+  --text-secondary: #4A5568;
+  --text-muted:     #8B95A3;
 
-  /* Accent */
-  --accent:         #5B8CFF;
-  --accent-hover:   #7AA3FF;
-  --accent-muted:   #1E2E50;
+  /* Accent (bleu électrique — identité de marque) */
+  --accent:         #4A7AE8;
+  --accent-hover:   #5B8CFF;
+  --accent-muted:   #E3EBFF;
 
   /* Bordures */
-  --border:         #1E2228;
-  --border-hover:   #2D3340;
+  --border:         #DDE2EA;
+  --border-hover:   #C5CDD8;
 
   /* États */
-  --error:          #FF5B5B;
-  --success:        #4ADE80;
-  --warning:        #FFA928;
+  --error:          #E04545;
+  --success:        #16A34A;
+  --warning:        #D97706;
+
+  /* Overlays & effets */
+  --overlay:        rgba(11, 13, 16, 0.45);
+  --hero-glow:      rgba(91, 140, 255, 0.12);
 
   /* Misc */
   --radius-sm:  0.5rem;
@@ -37,12 +45,44 @@
   --radius-xl:  1.5rem;
 
   /* Shadows */
-  --shadow-sm:  0 1px 3px rgba(0,0,0,.4);
-  --shadow-md:  0 4px 16px rgba(0,0,0,.5);
-  --shadow-lg:  0 8px 32px rgba(0,0,0,.6);
+  --shadow-sm:  0 1px 3px rgba(11, 13, 16, 0.08);
+  --shadow-md:  0 4px 16px rgba(11, 13, 16, 0.1);
+  --shadow-lg:  0 8px 32px rgba(11, 13, 16, 0.12);
 
   /* Transitions */
-  --transition: 150ms cubic-bezier(.4,0,.2,1);
+  --transition: 150ms cubic-bezier(.4, 0, .2, 1);
+}
+
+.dark {
+  color-scheme: dark;
+
+  --bg-base:       #0B0D10;
+  --bg-card:       #13161B;
+  --bg-hover:      #1A1E25;
+  --bg-secondary:  #1A1E25;
+  --bg-primary:    #0B0D10;
+
+  --text-primary:   #F5F7FA;
+  --text-secondary: #8B95A3;
+  --text-muted:     #4A5260;
+
+  --accent:         #5B8CFF;
+  --accent-hover:   #7AA3FF;
+  --accent-muted:   #1E2E50;
+
+  --border:         #1E2228;
+  --border-hover:   #2D3340;
+
+  --error:          #FF5B5B;
+  --success:        #4ADE80;
+  --warning:        #FFA928;
+
+  --overlay:        rgba(0, 0, 0, 0.6);
+  --hero-glow:      rgba(91, 140, 255, 0.15);
+
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md:  0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg:  0 8px 32px rgba(0, 0, 0, 0.6);
 }
 
 /* ─────────────────────────────────────────────
@@ -72,7 +112,6 @@
 }
 
 html {
-  color-scheme: dark;
   scroll-behavior: smooth;
 }
 
@@ -198,6 +237,81 @@ a:hover { color: var(--accent); }
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.overlay-backdrop {
+  background: var(--overlay);
+}
+
+/* ─────────────────────────────────────────────
+   TipTap / ProseMirror
+───────────────────────────────────────────── */
+
+.tiptap,
+.ProseMirror {
+  color: var(--text-primary);
+  outline: none;
+  min-height: 200px;
+}
+
+.tiptap p,
+.ProseMirror p {
+  color: var(--text-primary);
+  margin: 0.75em 0;
+}
+
+.tiptap h1, .tiptap h2, .tiptap h3,
+.ProseMirror h1, .ProseMirror h2, .ProseMirror h3 {
+  color: var(--text-primary);
+  margin: 1em 0 0.5em;
+}
+
+.tiptap a,
+.ProseMirror a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.tiptap code,
+.ProseMirror code {
+  background: var(--bg-secondary);
+  color: var(--accent);
+  padding: 0.15em 0.35em;
+  border-radius: var(--radius-sm);
+  font-size: 0.9em;
+}
+
+.tiptap pre,
+.ProseMirror pre {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.tiptap blockquote,
+.ProseMirror blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 1rem;
+  color: var(--text-secondary);
+  margin: 1em 0;
+}
+
+.tiptap hr,
+.ProseMirror hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.5em 0;
+}
+
+.tiptap .is-editor-empty:first-child::before,
+.ProseMirror .is-editor-empty:first-child::before {
+  color: var(--text-muted);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
 }
 
 /* ─────────────────────────────────────────────

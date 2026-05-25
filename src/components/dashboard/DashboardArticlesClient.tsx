@@ -14,11 +14,11 @@ type Tab = 'all' | 'published' | 'draft';
 
 export function DashboardArticlesClient() {
   const [tab, setTab] = useState<Tab>('all');
-  const { articles, isLoading, mutate } = useArticles();
+  const { articles, isLoading, refresh } = useArticles();
 
   async function handleDelete(id: string) {
     await api.articles.delete(id);
-    mutate();
+    refresh();
   }
 
   const filtered = articles?.filter((a) => {

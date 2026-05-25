@@ -9,7 +9,10 @@ export function useAnalyticsOverview() {
     '/analytics/overview',
     async () => {
       const response = await apiClient.analytics.getOverview();
-      return response?.data || response;
+      if (!response.data) {
+        throw new Error('Analytics overview unavailable');
+      }
+      return response.data;
     },
     { refreshInterval: 60_000 }
   );

@@ -5,16 +5,17 @@ import { Calendar, Clock, Folder } from 'lucide-react';
 import { UserAvatar } from '@/components/profile/UserAvatar';
 import { formatDate, timeAgo, estimateReadTime } from '@/lib/utils';
 import { ROUTES } from '@/lib/constants';
-import type { Article } from '@/types/api';
+import type { Article, ArticleSummary } from '@/types/api';
 
 interface ArticleMetaProps {
-  article: Article;
+  article: ArticleSummary | Article;
   compact?: boolean;
   className?: string;
 }
 
 export function ArticleMeta({ article, compact = false, className = '' }: ArticleMetaProps) {
-  const readTime = estimateReadTime(article.content ?? '');
+  const content = 'content' in article ? article.content : undefined;
+  const readTime = estimateReadTime(content ?? '');
   const publishedAt = article.publishedAt ?? article.createdAt;
   const author = article.author;
 
@@ -29,7 +30,7 @@ export function ArticleMeta({ article, compact = false, className = '' }: Articl
         <time dateTime={publishedAt} title={formatDate(publishedAt)}>
           {timeAgo(publishedAt)}
         </time>
-        {article.content && (
+        {content && (
           <>
             <span className="opacity-40">·</span>
             <span>{readTime}</span>
@@ -69,7 +70,7 @@ export function ArticleMeta({ article, compact = false, className = '' }: Articl
               </time>
             </span>
 
-            {article.content && (
+            {content && (
               <span className="flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5" />
                 {readTime}

@@ -30,9 +30,9 @@ export function useFollow(authorId: string) {
     setIsToggling(true);
     try {
       if (isFollowing) {
-        await apiClient.subscriptions.unfollow(authorId);
+        await apiClient.subscriptions.unfollowAuthor(authorId);
       } else {
-        await apiClient.subscriptions.follow(authorId);
+        await apiClient.subscriptions.followAuthor(authorId);
       }
       await Promise.all([mutateStatus(), mutateCount()]);
     } finally {

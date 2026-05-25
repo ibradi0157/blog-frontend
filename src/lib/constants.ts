@@ -143,14 +143,26 @@ export const ANALYTICS_DEBOUNCE_MS = 500
 
 export const DESIGN = {
   colors: {
-    background: '#0B0D10',
-    surface:    '#13161B',
-    text:       '#F5F7FA',
-    accent:     '#5B8CFF',
-    muted:      '#8B95A3',
-    border:     '#1E2228',
-    error:      '#FF5B5B',
-    success:    '#4ADE80',
+    dark: {
+      background: '#0B0D10',
+      surface:    '#13161B',
+      text:       '#F5F7FA',
+      accent:     '#5B8CFF',
+      muted:      '#8B95A3',
+      border:     '#1E2228',
+      error:      '#FF5B5B',
+      success:    '#4ADE80',
+    },
+    light: {
+      background: '#F4F6F9',
+      surface:    '#FFFFFF',
+      text:       '#0B0D10',
+      accent:     '#4A7AE8',
+      muted:      '#8B95A3',
+      border:     '#DDE2EA',
+      error:      '#E04545',
+      success:    '#16A34A',
+    },
   },
   animation: {
     fast:   '150ms ease',

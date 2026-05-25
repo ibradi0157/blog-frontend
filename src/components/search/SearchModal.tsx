@@ -19,7 +19,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<PublicArticle[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     if (!isOpen) { setQuery(''); setResults([]); return; }
@@ -56,7 +56,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4">
-      <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <div className="fixed inset-0 overlay-backdrop backdrop-blur-sm" onClick={onClose} />
       <div className="card relative z-10 w-full max-w-xl shadow-2xl animate-fade-in">
         <div className="p-4 border-b border-[var(--border)]">
           <SearchBar

@@ -70,7 +70,7 @@ export function CommentItem({
             <CommentReplyForm
               articleId={articleId}
               parentId={comment.id}
-              replyingToUsername={comment.author?.username}
+              replyingToUsername={comment.author?.username ?? undefined}
               onSubmit={async (content, parentId) => {
                 await onReply(content, parentId);
                 setShowReplyForm(false);

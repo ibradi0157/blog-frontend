@@ -45,7 +45,7 @@ export function AnalyticsChart({ period = '30d', height = 300 }: AnalyticsChartP
         <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 11 }} axisLine={false} tickLine={false} />
         <Tooltip
           contentStyle={{
-            background: 'var(--bg-primary)',
+            background: 'var(--bg-card)',
             border: '1px solid var(--border)',
             borderRadius: '12px',
             color: 'var(--text-primary)',

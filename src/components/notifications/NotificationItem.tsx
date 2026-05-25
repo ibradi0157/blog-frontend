@@ -8,12 +8,18 @@ import { Heart, MessageSquare, UserPlus, Bell, BookOpen, Mail } from 'lucide-rea
 import type { Notification, NotificationType } from '@/types/api'
 
 const TYPE_CONFIG: Record<NotificationType, { icon: React.ElementType; color: string; label: string }> = {
-  LIKE_ARTICLE:    { icon: Heart,         color: 'text-[var(--error)]',   label: 'a liké votre article'    },
-  LIKE_COMMENT:    { icon: Heart,         color: 'text-[var(--error)]',   label: 'a liké votre commentaire'},
-  COMMENT:         { icon: MessageSquare, color: 'text-[var(--accent)]',  label: 'a commenté'              },
-  FOLLOW:          { icon: UserPlus,      color: 'text-[var(--success)]', label: 'vous suit maintenant'    },
-  NEW_ARTICLE:     { icon: BookOpen,      color: 'text-[var(--warning)]', label: 'a publié un article'     },
-  NEWSLETTER:      { icon: Mail,          color: 'text-[var(--accent)]',  label: 'newsletter'              },
+  article_published: { icon: BookOpen,      color: 'text-[var(--warning)]', label: 'a publié un article'     },
+  comment_added:     { icon: MessageSquare, color: 'text-[var(--accent)]',  label: 'a commenté'              },
+  comment_reply:     { icon: MessageSquare, color: 'text-[var(--accent)]',  label: 'a répondu à votre commentaire' },
+  like_received:     { icon: Heart,         color: 'text-[var(--error)]',   label: 'a aimé votre contenu'    },
+  follow:            { icon: UserPlus,      color: 'text-[var(--success)]', label: 'vous suit maintenant'    },
+  mention:           { icon: Bell,          color: 'text-[var(--accent)]',  label: 'vous a mentionné'        },
+  LIKE_ARTICLE:      { icon: Heart,         color: 'text-[var(--error)]',   label: 'a liké votre article'    },
+  LIKE_COMMENT:      { icon: Heart,         color: 'text-[var(--error)]',   label: 'a liké votre commentaire'},
+  COMMENT:           { icon: MessageSquare, color: 'text-[var(--accent)]',  label: 'a commenté'              },
+  FOLLOW:            { icon: UserPlus,      color: 'text-[var(--success)]', label: 'vous suit maintenant'    },
+  NEW_ARTICLE:       { icon: BookOpen,      color: 'text-[var(--warning)]', label: 'a publié un article'     },
+  NEWSLETTER:        { icon: Mail,          color: 'text-[var(--accent)]',  label: 'newsletter'              },
 }
 
 interface NotificationItemProps {

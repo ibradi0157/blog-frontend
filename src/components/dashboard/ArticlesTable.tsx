@@ -65,7 +65,7 @@ export function ArticlesTable({ articles, onDelete, onPublish }: ArticlesTablePr
                   </Link>
                 </td>
                 <td className="px-4 py-3 hidden md:table-cell">
-                  <StatusBadge status={article.status} />
+                  <StatusBadge status={article.status ?? (article.isPublished ? 'published' : 'draft')} />
                 </td>
                 <td className="px-4 py-3 hidden lg:table-cell text-[var(--text-secondary)]">
                   <span className="flex items-center gap-1">

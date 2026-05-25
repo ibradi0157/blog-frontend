@@ -8,6 +8,7 @@ import { ROUTES } from '@/lib/constants'
 import { useAuth } from '@/contexts/AuthContext'
 import { NotificationBell } from '@/components/notifications/NotificationBell'
 import { UserAvatar } from '@/components/profile/UserAvatar'
+import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import {
   Menu, X, PenSquare, LayoutDashboard, LogOut, Settings, User,
 } from 'lucide-react'
@@ -74,6 +75,8 @@ export function Navbar() {
 
           {/* Right side */}
           <div className="flex items-center gap-2">
+            <ThemeToggle />
+
             {isAuthenticated && user ? (
               <>
                 {/* Notification bell */}
@@ -166,6 +169,9 @@ export function Navbar() {
                 {label}
               </Link>
             ))}
+            <div className="pt-2 mt-2 border-t border-[var(--border)]">
+              <ThemeToggle showLabel className="w-full" />
+            </div>
             {isAuthenticated && (
               <Link href={ROUTES.DASHBOARD_NEW_ARTICLE} className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-[var(--text-secondary)] rounded-[var(--radius)]">
                 <PenSquare className="w-4 h-4" /> Écrire un article

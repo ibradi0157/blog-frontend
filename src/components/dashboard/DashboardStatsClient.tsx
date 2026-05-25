@@ -32,13 +32,13 @@ export function DashboardStatsClient() {
 
   const stats = [
     {
-      title: 'Articles publiés',
-      value: formatCount(overview?.totalArticles ?? 0),
+      title: 'Pages vues',
+      value: formatCount(overview?.totalPageViews ?? 0),
       icon: <FileText size={18} />,
     },
     {
-      title: 'Vues totales',
-      value: formatCount(overview?.totalViews ?? 0),
+      title: 'Vues articles',
+      value: formatCount(overview?.totalArticleViews ?? 0),
       icon: <Eye size={18} />,
     },
     {
@@ -47,8 +47,8 @@ export function DashboardStatsClient() {
       icon: <Heart size={18} />,
     },
     {
-      title: 'Abonnés',
-      value: formatCount(overview?.totalFollowers ?? 0),
+      title: 'Commentaires',
+      value: formatCount(overview?.totalComments ?? 0),
       icon: <Users size={18} />,
     },
   ];

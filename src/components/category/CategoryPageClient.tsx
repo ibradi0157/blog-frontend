@@ -27,7 +27,7 @@ export function CategoryPageClient({ slug }: CategoryPageClientProps) {
 
   return (
     <div className="py-8 space-y-8">
-      <h1 className="text-3xl font-bold text-[var(--text-primary)] capitalize">{slug.replace(/-/g, ' ')}</h1>
+      <h1 className="text-3xl font-bold text-[var(--text-primary)] capitalize">{(slug ?? '').replace(/-/g, ' ')}</h1>
 
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

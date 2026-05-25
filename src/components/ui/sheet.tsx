@@ -29,7 +29,7 @@ export function Sheet({ open, onClose, title, children, side = 'right', classNam
 
   return (
     <div className="fixed inset-0 z-50 flex" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 overlay-backdrop backdrop-blur-sm" onClick={onClose} />
       <div className={cn(
         'absolute top-0 bottom-0 w-80 max-w-full bg-[var(--bg-primary)] border-[var(--border)] shadow-2xl',
         'flex flex-col overflow-hidden',
