@@ -59,8 +59,9 @@ export function NotificationProvider({
   const { setNotifications, addNotification, setLoading, setError } =
     useNotificationStore()
 
-  // Ref pour éviter les doubles fetch en StrictMode
-  const hasFetchedRef = useRef(false)
+  const hasFetchedRef  = useRef(false)
+  // ── FIX: track whether WE created the socket this render ──────────────
+  const socketActiveRef = useRef(false)
 
   // ── Chargement initial des notifications ─────────────────────────────────
   const refresh = useCallback(async () => {
@@ -75,41 +76,67 @@ export function NotificationProvider({
     }
   }, [isAuthenticated, setNotifications, setLoading, setError])
 
-  // ── Connexion WebSocket + écoute notifications ────────────────────────────
+  // ── Disconnect when user logs out ──────────────────────────────────────
   useEffect(() => {
-    if (!isAuthenticated || !token || !user) {
+    if (!isAuthenticated) {
       disconnectSocket()
-      hasFetchedRef.current = false
-      return
+      socketActiveRef.current = false
+      hasFetchedRef.current   = false
     }
+  }, [isAuthenticated])
 
-    // Chargement HTTP initial (une seule fois par session)
+  // ── WebSocket + initial HTTP fetch ────────────────────────────────────
+  useEffect(() => {
+    if (!isAuthenticated || !token || !user) return
+
+    // Initial HTTP fetch (once per session)
     if (!hasFetchedRef.current) {
       hasFetchedRef.current = true
       void refresh()
     }
 
-    // Connexion WebSocket
+    // ── FIX: avoid creating duplicate sockets in React StrictMode ──────
+    // StrictMode unmounts+remounts effects in dev. We guard with a ref so
+    // we only create one socket per authentication session.
+    if (socketActiveRef.current) return
+    socketActiveRef.current = true
+
     const socket = createSocket(token)
 
-    // Rejoindre la room privée dès la connexion
-    socket.on('connect', () => {
-      joinUserRoom(user.id)
-    })
+    // Silently swallow connection errors to avoid terminal spray
+    // socket.io will handle retries automatically (reconnectionAttempts: 10)
+    const handleConnectError = (err: Error) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('[Socket] Connexion impossible (retry automatique):', err.message)
+      }
+    }
+    socket.on('connect_error', handleConnectError)
 
-    // Si déjà connecté, rejoindre directement
+    // Join private room on (re)connect
+    const handleConnect = () => {
+      joinUserRoom(user.id)
+    }
+    socket.on('connect', handleConnect)
+
+    // If already connected, join immediately
     if (socket.connected) {
       joinUserRoom(user.id)
     }
 
-    // Écoute des notifications entrantes
+    // Listen for incoming notifications
     const offNotification = onNotification((notif) => {
       addNotification(notif)
     })
 
+    // ── FIX: cleanup removes listeners but does NOT disconnect the socket.
+    // Disconnecting in cleanup causes the StrictMode double-mount to kill
+    // the socket before the second mount has a chance to use it.
+    // The socket is only disconnected in the isAuthenticated=false effect above.
     return () => {
       offNotification()
-      disconnectSocket()
+      socket.off('connect', handleConnect)
+      socket.off('connect_error', handleConnectError)
+      socketActiveRef.current = false
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, token, user?.id])
