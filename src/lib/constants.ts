@@ -10,7 +10,8 @@
 // ─────────────────────────────────────────────
 
 const API_ORIGIN = (
-  process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001'
+  // Backend NestJS écoute sur 3000 par défaut (Next sur 3001)
+  process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000'
 ).replace(/\/$/, '')
 
 export const BASE_URL = API_ORIGIN.endsWith('/api/v1')
@@ -20,7 +21,7 @@ export const BASE_URL = API_ORIGIN.endsWith('/api/v1')
 /** Socket.io est monté à la racine du backend, pas sous /api/v1 */
 export const WS_URL = (
   process.env.NEXT_PUBLIC_WS_URL ??
-  (API_ORIGIN.replace(/\/api\/v1$/, '') || 'http://localhost:3001')
+  (API_ORIGIN.replace(/\/api\/v1$/, '') || 'http://localhost:3000')
 ).replace(/\/$/, '')
 
 // ─────────────────────────────────────────────

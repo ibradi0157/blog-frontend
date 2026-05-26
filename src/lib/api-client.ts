@@ -127,14 +127,14 @@ import type {
   ApiResponse,
   PaginationMeta,
 } from '@/types/api'
+import { BASE_URL as API_BASE_URL } from '@/lib/constants'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CONFIGURATION
 // ─────────────────────────────────────────────────────────────────────────────
 
-const BASE_URL = (
-  process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001'
-).replace(/\/$/, '') + '/api/v1'
+// Utilise la source de vérité unique (constants.ts) pour éviter les doublons `/api/v1/api/v1`
+const BASE_URL = API_BASE_URL.replace(/\/$/, '')
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ERROR CLASS
