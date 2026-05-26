@@ -21,7 +21,9 @@ import type { RoleName } from '@/types/api'
 
 export interface JwtPayload {
   /** ID utilisateur (sub) */
-  sub: string
+  sub?: string
+  /** ID utilisateur alternatif retourné par certains backends */
+  userId?: string
   /** Email */
   email: string
   /** Rôle */
@@ -122,8 +124,12 @@ export function getUserFromToken(token: string): AuthUser | null {
   if (!isTokenValid(token)) return null
   const payload = decodeToken(token)
   if (!payload) return null
+
+  const userId = payload.sub ?? payload.userId
+  if (!userId || !payload.email || !payload.role) return null
+
   return {
-    id:    payload.sub,
+    id:    userId,
     email: payload.email,
     role:  payload.role,
   }

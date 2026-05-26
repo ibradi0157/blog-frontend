@@ -10,7 +10,7 @@ import { NotificationBell } from '@/components/notifications/NotificationBell'
 import { UserAvatar } from '@/components/profile/UserAvatar'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import {
-  Menu, X, PenSquare, LayoutDashboard, LogOut, Settings, User,
+  Menu, X, PenSquare, LayoutDashboard, LogOut, Settings, User, Shield,
 } from 'lucide-react'
 
 const NAV_LINKS = [
@@ -24,7 +24,12 @@ export function Navbar() {
   const [menuOpen,    setMenuOpen]    = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const pathname = usePathname()
-  const { user, isAuthenticated, logout } = useAuth()
+<<<<<<< HEAD
+  const { user, isAuthenticated, logout, isHydrated } = useAuth()
+=======
+  const { user, isAuthenticated, logout, hasRole } = useAuth()
+  const canAccessAdmin = isAuthenticated && !!user && hasRole('SECONDARY_ADMIN')
+>>>>>>> 0544286b345bb9804e22474f86f749ede8d83653
 
   // Transparent → solid on scroll
   useEffect(() => {
@@ -77,7 +82,7 @@ export function Navbar() {
           <div className="flex items-center gap-2">
             <ThemeToggle />
 
-            {isAuthenticated && user ? (
+            {isHydrated && isAuthenticated && user ? (
               <>
                 {/* Notification bell */}
                 <NotificationBell />
@@ -90,6 +95,16 @@ export function Navbar() {
                   <PenSquare className="w-4 h-4" />
                   <span>Écrire</span>
                 </Link>
+
+                {canAccessAdmin && (
+                  <Link
+                    href={ROUTES.ADMIN}
+                    className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-[var(--accent)] hover:text-[var(--accent-hover)] hover:bg-[var(--accent)]/10 rounded-[var(--radius)] transition-colors"
+                  >
+                    <Shield className="w-4 h-4" />
+                    <span>Admin</span>
+                  </Link>
+                )}
 
                 {/* Profile dropdown */}
                 <div className="relative">
@@ -106,11 +121,14 @@ export function Navbar() {
                       <div className="fixed inset-0 z-10" onClick={() => setProfileOpen(false)} />
                       <div className="absolute right-0 mt-2 w-52 z-20 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--bg-card)] shadow-[var(--shadow-lg)] overflow-hidden animate-fade-in-fast">
                         <div className="px-3 py-2.5 border-b border-[var(--border)]">
-                          <p className="text-sm font-medium text-[var(--text-primary)] truncate">{user.username}</p>
+                          <p className="text-sm font-medium text-[var(--text-primary)] truncate">{user.displayName ?? user.username ?? user.email}</p>
                           <p className="text-xs text-[var(--text-muted)] truncate">{user.email}</p>
                         </div>
                         <div className="py-1">
                           <DropdownItem href={ROUTES.DASHBOARD}       icon={<LayoutDashboard className="w-4 h-4"/>} label="Dashboard"   />
+                          {canAccessAdmin && (
+                            <DropdownItem href={ROUTES.ADMIN} icon={<Shield className="w-4 h-4"/>} label="Administration" />
+                          )}
                           <DropdownItem href={ROUTES.PROFILE}         icon={<User            className="w-4 h-4"/>} label="Mon profil"  />
                           <DropdownItem href={ROUTES.DASHBOARD_SETTINGS}        icon={<Settings        className="w-4 h-4"/>} label="Paramètres" />
                         </div>
@@ -173,9 +191,16 @@ export function Navbar() {
               <ThemeToggle showLabel className="w-full" />
             </div>
             {isAuthenticated && (
-              <Link href={ROUTES.DASHBOARD_NEW_ARTICLE} className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-[var(--text-secondary)] rounded-[var(--radius)]">
-                <PenSquare className="w-4 h-4" /> Écrire un article
-              </Link>
+              <>
+                <Link href={ROUTES.DASHBOARD_NEW_ARTICLE} className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-[var(--text-secondary)] rounded-[var(--radius)]">
+                  <PenSquare className="w-4 h-4" /> Écrire un article
+                </Link>
+                {canAccessAdmin && (
+                  <Link href={ROUTES.ADMIN} className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-[var(--accent)] rounded-[var(--radius)]">
+                    <Shield className="w-4 h-4" /> Administration
+                  </Link>
+                )}
+              </>
             )}
           </nav>
         </div>

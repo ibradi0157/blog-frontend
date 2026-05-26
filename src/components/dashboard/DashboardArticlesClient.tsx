@@ -22,8 +22,8 @@ export function DashboardArticlesClient() {
   }
 
   const filtered = articles?.filter((a) => {
-    if (tab === 'published') return a.status === 'published';
-    if (tab === 'draft') return a.status === 'draft';
+    if (tab === 'published') return a.isPublished;
+    if (tab === 'draft') return !a.isPublished;
     return true;
   }) ?? [];
 

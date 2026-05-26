@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+
 import Link from 'next/link';
 import { Eye, EyeOff, Loader2, AlertCircle, Check } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -31,7 +31,6 @@ const PASSWORD_RULES = [
 ];
 
 export function RegisterForm() {
-  const router = useRouter();
   const { login } = useAuth();
 
   const [formData, setFormData] = useState<RegisterFormData>({
@@ -103,8 +102,7 @@ export function RegisterForm() {
         confirmPassword: formData.confirmPassword,
         displayName: formData.username.trim(),
       });
-      login(response);
-      router.push(ROUTES.HOME);
+      await login(response);
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : 'Inscription impossible. Veuillez réessayer.';

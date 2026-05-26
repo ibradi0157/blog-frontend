@@ -39,7 +39,7 @@ function getBgColor(str: string) {
 
 export function UserAvatar({ user, size = 'md', className }: UserAvatarProps) {
   const { container, text } = sizes[size]
-  const displayName = user.username ?? user.displayName ?? user.email
+  const displayName = user.username ?? user.displayName ?? user.email ?? 'User'
   const bg = getBgColor(displayName)
 
   if (user.avatarUrl) {

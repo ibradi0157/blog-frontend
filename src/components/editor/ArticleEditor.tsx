@@ -133,6 +133,7 @@ export function ArticleEditor({
 }: ArticleEditorProps) {
   const { user } = useAuth();
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
   const [articleId, setArticleId] = useState(initialArticleId);
   const [title, setTitle] = useState(initialMeta?.title ?? '');
   const [meta, setMeta] = useState<ArticleMeta>({
@@ -147,6 +148,7 @@ export function ArticleEditor({
   const [sidePanel, setSidePanel] = useState<SidePanel>(null);
   const [showImageUpload, setShowImageUpload] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoadingArticle, setIsLoadingArticle] = useState(mode === 'edit');
 
   // Slash commands state
   const [slashMenuOpen, setSlashMenuOpen] = useState(false);
@@ -156,6 +158,7 @@ export function ArticleEditor({
 
   const autosaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const contentRef = useRef(initialContent);
+  const isHydratingEditor = useRef(false);
 
   const slashCallbacks = {
     onOpen:    (query: string, rect: DOMRect | null) => {
@@ -186,7 +189,9 @@ export function ArticleEditor({
       createSlashCommandExtension(slashCallbacks),
     ],
     content: initialContent,
+    immediatelyRender: false,
     onUpdate: ({ editor }) => {
+      if (isHydratingEditor.current) return;
       contentRef.current = editor.getHTML();
       triggerAutosave();
 
@@ -221,6 +226,49 @@ export function ArticleEditor({
       },
     },
   });
+
+  useEffect(() => {
+    if (mode !== 'edit' || !articleId) {
+      setIsLoadingArticle(false);
+      return;
+    }
+
+    let isMounted = true;
+    setIsLoadingArticle(true);
+
+    apiClient.articles.getOne(articleId)
+      .then((response) => {
+        if (!isMounted) return;
+        const article = (response as any)?.data ?? (response as any);
+        if (!article) return;
+
+        isHydratingEditor.current = true;
+        setTitle(article.title ?? '');
+        setPublished(Boolean(article.isPublished));
+        setMeta({
+          title: article.title ?? '',
+          excerpt: article.excerpt ?? '',
+          categoryId: article.category?.id ?? '',
+          tags: article.tags ?? [],
+          coverUrl: article.coverUrl ?? null,
+        });
+        contentRef.current = article.content ?? '';
+        editor?.commands.setContent(article.content ?? '');
+        requestAnimationFrame(() => {
+          isHydratingEditor.current = false;
+        });
+      })
+      .catch(() => {
+        setAutosaveStatus('error');
+      })
+      .finally(() => {
+        if (isMounted) setIsLoadingArticle(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [articleId, editor, mode]);
 
   const handleSlashCommand = useCallback((item: { command: (editor: any) => void }) => {
     if (!editor) return;
@@ -313,6 +361,26 @@ export function ArticleEditor({
     return () => document.removeEventListener('click', close);
   }, [slashMenuOpen]);
 
+<<<<<<< HEAD
+  // Montage côté client pour éviter les hydration mismatches de Tiptap
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+=======
+  if (mode === 'edit' && isLoadingArticle) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[var(--bg-primary)] px-6">
+        <div className="max-w-md text-center space-y-3">
+          <p className="text-sm font-medium text-[var(--text-primary)]">Chargement de l’article…</p>
+          <p className="text-xs text-[var(--text-muted)]">
+            Récupération du contenu et des métadonnées de l’article en cours.
+          </p>
+        </div>
+      </div>
+    );
+  }
+>>>>>>> 0544286b345bb9804e22474f86f749ede8d83653
+
   return (
     <div className="flex h-full min-h-screen bg-[var(--bg-primary)]">
       {/* Main editor area */}
@@ -349,16 +417,16 @@ export function ArticleEditor({
         </div>
 
         {/* Toolbar */}
-        <EditorToolbar editor={editor} onImageUpload={() => setShowImageUpload(true)} />
+        {isMounted && <EditorToolbar editor={editor} onImageUpload={() => setShowImageUpload(true)} />}
 
         {/* Editor */}
         <div className="flex-1 px-8 md:px-16 py-8">
-          {editor && <EditorBubbleMenu editor={editor} />}
-          <EditorContent editor={editor} />
+          {isMounted && editor && <EditorBubbleMenu editor={editor} />}
+          {isMounted && <EditorContent editor={editor} />}
         </div>
 
         {/* Image upload popup */}
-        {showImageUpload && articleId && (
+        {isMounted && showImageUpload && articleId && (
           <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setShowImageUpload(false)}>
             <div className="absolute inset-0 overlay-backdrop" />
             <div className="relative z-10 bg-[var(--bg-primary)] border border-[var(--border)] rounded-2xl shadow-2xl" onClick={(e) => e.stopPropagation()}>
@@ -373,7 +441,7 @@ export function ArticleEditor({
       </div>
 
       {/* Slash command menu */}
-      {slashMenuOpen && slashItems.length > 0 && typeof document !== 'undefined' && createPortal(
+      {isMounted && slashMenuOpen && slashItems.length > 0 && typeof document !== 'undefined' && createPortal(
         <div
           style={{ position: 'absolute', top: slashMenuPos.top, left: slashMenuPos.left, zIndex: 9999 }}
           onClick={(e) => e.stopPropagation()}
@@ -399,7 +467,7 @@ export function ArticleEditor({
             </button>
           </div>
           <div className="p-5 space-y-6">
-            {sidePanel === 'meta' && (
+            {isMounted && sidePanel === 'meta' && (
               <>
                 <ArticleMetaForm
                   articleId={articleId ?? ''}
@@ -419,7 +487,7 @@ export function ArticleEditor({
                 )}
               </>
             )}
-            {sidePanel === 'history' && articleId && (
+            {isMounted && sidePanel === 'history' && articleId && (
               <ArticleVersionHistory
                 articleId={articleId}
                 onRestore={(versionId) => console.log('Restore', versionId)}

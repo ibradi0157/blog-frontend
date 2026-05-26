@@ -40,11 +40,11 @@ npm run dev
 2. Configurer `.env.local` :
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:3001
-NEXT_PUBLIC_WS_URL=http://localhost:3001
+NEXT_PUBLIC_API_URL=http://localhost:3000
+NEXT_PUBLIC_WS_URL=http://localhost:3000
 ```
 
-3. Activer **CORS** sur l'API pour `http://localhost:3000`.
-4. Vérifier : `curl http://localhost:3001/health`
+3. Activer **CORS** sur l'API pour `http://localhost:3001`.
+4. Vérifier : `curl http://localhost:3000/health`
 
 Détails, liste des routes, formats JSON et checklist : **[docs/GUIDE-DEVELOPPEUR.md](docs/GUIDE-DEVELOPPEUR.md)**.

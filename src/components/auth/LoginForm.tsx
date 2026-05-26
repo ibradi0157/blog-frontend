@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -21,7 +20,6 @@ interface LoginFormErrors {
 }
 
 export function LoginForm() {
-  const router = useRouter();
   const { login } = useAuth();
 
   const [formData, setFormData] = useState<LoginFormData>({ email: '', password: '' });
@@ -68,8 +66,7 @@ export function LoginForm() {
         email: formData.email.trim().toLowerCase(),
         password: formData.password,
       });
-      login(response);
-      router.push(ROUTES.HOME);
+      await login(response);
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : 'Identifiants incorrects. Veuillez réessayer.';
