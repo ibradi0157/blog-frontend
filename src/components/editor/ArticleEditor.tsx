@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useEditor, EditorContent, Extension } from '@tiptap/react';
@@ -361,12 +361,11 @@ export function ArticleEditor({
     return () => document.removeEventListener('click', close);
   }, [slashMenuOpen]);
 
-<<<<<<< HEAD
   // Montage côté client pour éviter les hydration mismatches de Tiptap
   useEffect(() => {
     setIsMounted(true);
   }, []);
-=======
+
   if (mode === 'edit' && isLoadingArticle) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[var(--bg-primary)] px-6">
@@ -379,7 +378,6 @@ export function ArticleEditor({
       </div>
     );
   }
->>>>>>> 0544286b345bb9804e22474f86f749ede8d83653
 
   return (
     <div className="flex h-full min-h-screen bg-[var(--bg-primary)]">

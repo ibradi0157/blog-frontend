@@ -24,12 +24,8 @@ export function Navbar() {
   const [menuOpen,    setMenuOpen]    = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const pathname = usePathname()
-<<<<<<< HEAD
-  const { user, isAuthenticated, logout, isHydrated } = useAuth()
-=======
-  const { user, isAuthenticated, logout, hasRole } = useAuth()
+  const { user, isAuthenticated, logout, isHydrated, hasRole } = useAuth()
   const canAccessAdmin = isAuthenticated && !!user && hasRole('SECONDARY_ADMIN')
->>>>>>> 0544286b345bb9804e22474f86f749ede8d83653
 
   // Transparent → solid on scroll
   useEffect(() => {

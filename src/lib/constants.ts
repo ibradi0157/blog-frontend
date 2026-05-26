@@ -20,11 +20,7 @@ export const BASE_URL = API_ORIGIN.endsWith('/api/v1')
 /** Socket.io est monté à la racine du backend, pas sous /api/v1 */
 export const WS_URL = (
   process.env.NEXT_PUBLIC_WS_URL ??
-<<<<<<< HEAD
-  (API_ORIGIN.replace(/\/api\/v1$/, '') || 'http://localhost:3000')
-=======
   (API_ORIGIN.replace(/\/api\/v1$/, '') || 'http://localhost:3001')
->>>>>>> 0544286b345bb9804e22474f86f749ede8d83653
 ).replace(/\/$/, '')
 
 // ─────────────────────────────────────────────
