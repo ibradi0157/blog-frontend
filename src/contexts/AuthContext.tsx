@@ -138,9 +138,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
     async (response: AuthResponse, redirectTo?: string) => {
       store.login(response)
       // Enrichir immédiatement après login (store.user est maintenant peuplé)
-      const userId = (response as any)?.data?.user?.id ?? (response as any)?.user?.id
+      // Le backend retourne response.data.userId (pas response.data.user.id)
+      const userId =
+        response?.data?.userId ??
+        (response as any)?.data?.user?.id ??
+        (response as any)?.user?.id
       if (userId) {
-        const fakeUser: AuthUser = { id: userId, email: '', role: 'SIMPLE_USER' }
+        const fakeUser: AuthUser = {
+          id:    userId,
+          email: response?.data?.email ?? '',
+          role:  response?.data?.role  ?? 'SIMPLE_USER',
+        }
         await enrichFromPublicProfile(userId, fakeUser, store.updateProfile)
       }
       router.push(redirectTo ?? ROUTES.DASHBOARD)

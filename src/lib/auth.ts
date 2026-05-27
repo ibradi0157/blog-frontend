@@ -83,9 +83,11 @@ export function decodeToken(token: string): JwtPayload | null {
 
 /**
  * Vérifie si un token JWT est expiré.
- * Ajoute une tolérance de 30 secondes pour compenser la latence réseau.
+ * La tolérance par défaut est 0 (pas de marge). Cela garantit que
+ * isTokenExpired() retourne false pour un token encore valide.
+ * Les appels spécifiques (auto-logout) peuvent passer une tolérance > 0.
  */
-export function isTokenExpired(token: string, toleranceSeconds = 30): boolean {
+export function isTokenExpired(token: string, toleranceSeconds = 0): boolean {
   const payload = decodeToken(token)
   if (!payload) return true
   const nowSeconds = Math.floor(Date.now() / 1000)
