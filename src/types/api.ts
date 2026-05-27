@@ -829,9 +829,25 @@ export interface AnalyticsOverview {
   countryBreakdown: Record<string, number>;
 }
 
+/** GET /analytics/author-overview */
+export interface AuthorAnalyticsOverview {
+  totalPageViews: number;
+  totalArticleViews: number;
+  totalLikes: number;
+  totalComments: number;
+  articleCount: number;
+  publishedCount: number;
+}
+
 export interface AnalyticsOverviewResponse {
   success?: boolean;
   data?: AnalyticsOverview;
+  [key: string]: unknown;
+}
+
+export interface AuthorAnalyticsOverviewResponse {
+  success?: boolean;
+  data?: AuthorAnalyticsOverview;
   [key: string]: unknown;
 }
 

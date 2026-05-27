@@ -6,7 +6,7 @@ import { LegalPageSlug } from '@/types/api';
 import { formatDate } from '@/lib/utils';
 
 interface LegalPageProps {
-  params: { slug: LegalPageSlug };
+  params: Promise<{ slug: LegalPageSlug }>;
 }
 
 const TITLES: Record<string, string> = {
@@ -16,16 +16,18 @@ const TITLES: Record<string, string> = {
   'about': 'À propos',
 };
 
-export function generateMetadata({ params }: LegalPageProps): Metadata {
+export async function generateMetadata({ params }: LegalPageProps): Promise<Metadata> {
+  const { slug } = await params;
   return {
-    title: `${TITLES[params.slug] ?? 'Page légale'} — Blog`,
+    title: `${TITLES[slug] ?? 'Page légale'} — Blog`,
   };
 }
 
 export default async function LegalPage({ params }: LegalPageProps) {
+  const { slug } = await params;
   let page;
   try {
-    const response = await apiClient.legal.getBySlug(params.slug);
+    const response = await apiClient.legal.getBySlug(slug);
     page = response.data;
     if (!page) notFound();
   } catch {
@@ -37,7 +39,7 @@ export default async function LegalPage({ params }: LegalPageProps) {
       <article className="py-12">
         <header className="mb-8 pb-6 border-b border-[var(--border)]">
           <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">
-            {page.title ?? TITLES[params.slug]}
+            {page.title ?? TITLES[slug]}
           </h1>
           {page.updatedAt && (
             <p className="text-sm text-[var(--text-muted)]">

@@ -1,20 +1,19 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
 import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { ArticleGrid } from '@/components/articles/ArticleGrid';
 import { PageWrapper } from '@/components/layout/PageWrapper';
-import { PageLoader } from '@/components/ui/loading-spinner';
 import { apiClient } from '@/lib/api-client';
 import { PublicUserProfile } from '@/types/api';
 
 interface AuthorPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export async function generateMetadata({ params }: AuthorPageProps): Promise<Metadata> {
+  const { id } = await params;
   try {
-    const data = await apiClient.users.getAuthorProfile(params.id);
+    const data = await apiClient.users.getAuthorProfile(id);
     const profile = data.data;
     return {
       title: `${profile.displayName} — Auteur`,
@@ -26,20 +25,20 @@ export async function generateMetadata({ params }: AuthorPageProps): Promise<Met
 }
 
 export default async function AuthorPage({ params }: AuthorPageProps) {
+  const { id } = await params;
   let profileData;
   try {
-    profileData = await apiClient.users.getAuthorProfile(params.id);
+    profileData = await apiClient.users.getAuthorProfile(id);
   } catch {
     notFound();
   }
 
   const authorData = profileData.data;
-  
-  // Adapt AuthorProfileResponse data to PublicUserProfile shape for ProfileHeader
+
   const profileForHeader: PublicUserProfile = {
     id: authorData.id,
     displayName: authorData.displayName,
-    username: authorData.displayName, // Fallback since not in response
+    username: authorData.displayName,
     email: authorData.email,
     avatarUrl: authorData.profilePicture,
     bio: undefined,
@@ -51,7 +50,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
     instagram: undefined,
     articlesCount: authorData.articlesCount,
     totalViews: authorData.totalViews,
-    role: {} as any, // Type adaptation
+    role: {} as any,
     createdAt: authorData.createdAt,
   };
 

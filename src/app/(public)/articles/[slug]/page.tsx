@@ -5,12 +5,13 @@ import api from '@/lib/api-client';
 import { ArticlePageClient } from '@/components/articles/ArticlePageClient';
 
 interface Props {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
   try {
-    const { data: article } = await api.articles.getPublicOne(params.slug);
+    const { data: article } = await api.articles.getPublicOne(slug);
     return {
       title: `${article.title} — Blog`,
       description: article.excerpt ?? article.title,
@@ -36,9 +37,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ArticleSlugPage({ params }: Props) {
+  const { slug } = await params;
   let initialArticle;
   try {
-    const response = await api.articles.getPublicOne(params.slug);
+    const response = await api.articles.getPublicOne(slug);
     initialArticle = response.data;
   } catch {
     notFound();
@@ -46,7 +48,7 @@ export default async function ArticleSlugPage({ params }: Props) {
 
   return (
     <Suspense fallback={<ArticlePageSkeleton />}>
-      <ArticlePageClient slug={params.slug} initialArticle={initialArticle} />
+      <ArticlePageClient slug={slug} initialArticle={initialArticle} />
     </Suspense>
   );
 }

@@ -19,6 +19,21 @@ export function useAnalyticsOverview() {
   return { overview: data, isLoading, error };
 }
 
+export function useAuthorAnalyticsOverview() {
+  const { data, isLoading, error } = useSWR(
+    '/analytics/author-overview',
+    async () => {
+      const response = await apiClient.analytics.getAuthorOverview();
+      if (!response.data) {
+        throw new Error('Author analytics overview unavailable');
+      }
+      return response.data;
+    },
+    { refreshInterval: 60_000, revalidateOnFocus: false },
+  );
+  return { overview: data, isLoading, error };
+}
+
 export function useAnalyticsTimeSeries(period: '7d' | '30d' | '90d' = '30d') {
   const { data, isLoading, error } = useSWR<TimeSeriesResponse>(
     `/analytics/timeseries?period=${period}`,

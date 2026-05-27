@@ -103,6 +103,7 @@ import type {
   // Analytics
   TrackEventDto,
   AnalyticsOverviewResponse,
+  AuthorAnalyticsOverviewResponse,
   TimeSeriesResponse,
   RealTimeStats,
   // Homepage
@@ -1255,6 +1256,13 @@ export const analyticsApi = {
     http.get<AnalyticsOverviewResponse>(
       `/analytics/overview${buildQuery(params as Record<string, unknown>)}`
     ),
+
+  /**
+   * GET /analytics/author-overview
+   * Stats agrégées des articles de l'auteur connecté.
+   */
+  getAuthorOverview: () =>
+    http.get<AuthorAnalyticsOverviewResponse>('/analytics/author-overview'),
 
   /**
    * GET /analytics/timeseries

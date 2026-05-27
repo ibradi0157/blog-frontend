@@ -2,7 +2,7 @@
 
 import { Eye, FileText, Heart, Users } from 'lucide-react';
 import { StatCard } from './StatCard';
-import { useAnalyticsOverview } from '@/hooks/useAnalytics';
+import { useAuthorAnalyticsOverview } from '@/hooks/useAnalytics';
 import { formatCount } from '@/lib/utils';
 
 function StatCardSkeleton() {
@@ -20,7 +20,7 @@ function StatCardSkeleton() {
 }
 
 export function DashboardStatsClient() {
-  const { overview, isLoading } = useAnalyticsOverview();
+  const { overview, isLoading } = useAuthorAnalyticsOverview();
 
   if (isLoading) {
     return (

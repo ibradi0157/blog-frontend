@@ -155,6 +155,25 @@ export function Sidebar({ variant = 'dashboard' }: SidebarProps) {
         ))}
       </nav>
 
+      <div className="px-3 py-3 border-t border-[var(--border)] space-y-0.5">
+        <Link
+          href={ROUTES.HOME}
+          className="flex items-center gap-2.5 px-2 py-2 rounded-[var(--radius)] text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-all"
+        >
+          <Home className="w-4 h-4 shrink-0" />
+          <span>Retour à l&apos;accueil</span>
+        </Link>
+        {variant === 'admin' && (
+          <Link
+            href={ROUTES.DASHBOARD}
+            className="flex items-center gap-2.5 px-2 py-2 rounded-[var(--radius)] text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-all"
+          >
+            <LayoutDashboard className="w-4 h-4 shrink-0" />
+            <span>Retour au dashboard</span>
+          </Link>
+        )}
+      </div>
+
       <div className="px-3 py-4 border-t border-[var(--border)]">
         <ThemeToggle showLabel />
       </div>
