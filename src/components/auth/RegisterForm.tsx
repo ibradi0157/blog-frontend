@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, Loader2, AlertCircle, Check } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { authApi } from '@/lib/api-client';
@@ -31,6 +32,7 @@ const PASSWORD_RULES = [
 ];
 
 export function RegisterForm() {
+  const router = useRouter();
   const { login } = useAuth();
 
   const [formData, setFormData] = useState<RegisterFormData>({
@@ -102,7 +104,19 @@ export function RegisterForm() {
         confirmPassword: formData.confirmPassword,
         displayName: formData.username.trim(),
       });
-      await login(response);
+
+      // SIMPLE_USER registration: backend returns { data: { email, expiresAt } }
+      // Other roles (PRIMARY_ADMIN): returns user data without accessToken
+      const isSingleUserFlow = (response.data as any)?.expiresAt;
+      
+      if (isSingleUserFlow) {
+        // SIMPLE_USER: email verification required
+        const emailParam = encodeURIComponent(formData.email.trim().toLowerCase());
+        router.push(`${ROUTES.VERIFY_EMAIL}?email=${emailParam}`);
+      } else {
+        // Other roles: attempt login (may need separate login endpoint)
+        await login(response);
+      }
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : 'Inscription impossible. Veuillez réessayer.';

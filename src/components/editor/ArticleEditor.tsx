@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useEditor, EditorContent, Extension } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
@@ -121,17 +122,26 @@ function createSlashCommandExtension(callbacks: {
   }
 }
 
-export function ArticleEditor({
+interface ArticleEditorContentProps {
+  mode: 'create' | 'edit';
+  initialArticleId?: string;
+  initialContent: string;
+  initialMeta?: Partial<ArticleMeta>;
+  isPublished: boolean;
+  onCreated?: (id: string) => void;
+  onSaved?: () => void;
+}
+
+function ArticleEditorContent({
   mode,
-  articleId: initialArticleId,
-  initialContent = '',
+  initialArticleId,
+  initialContent,
   initialMeta,
-  isPublished = false,
+  isPublished: initialIsPublished,
   onCreated,
   onSaved,
-}: ArticleEditorProps) {
+}: ArticleEditorContentProps) {
   const router = useRouter();
-  const [isMounted, setIsMounted] = useState(false);
   const [articleId, setArticleId] = useState(initialArticleId);
   const [title, setTitle] = useState(initialMeta?.title ?? '');
   const [meta, setMeta] = useState<ArticleMeta>({
@@ -142,7 +152,7 @@ export function ArticleEditor({
     coverUrl: initialMeta?.coverUrl ?? null,
   });
   const [autosaveStatus, setAutosaveStatus] = useState<AutosaveStatus>('idle');
-  const [published, setPublished] = useState(isPublished);
+  const [published, setPublished] = useState(initialIsPublished);
   const [sidePanel, setSidePanel] = useState<SidePanel>(null);
   const [showImageUpload, setShowImageUpload] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -152,6 +162,7 @@ export function ArticleEditor({
   const [slashMenuOpen, setSlashMenuOpen] = useState(false);
   const [slashItems, setSlashItems] = useState(getSlashItems(''));
   const [slashMenuPos, setSlashMenuPos] = useState({ top: 0, left: 0 });
+  const [isMounted, setIsMounted] = useState(false);
   const slashRef = useRef<any>(null);
 
   const autosaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -177,21 +188,18 @@ export function ArticleEditor({
     setIsMounted(true);
   }, []);
 
-  const extensions = useMemo(() => {
-    if (!isMounted) return [];
-    return [
-      ...(CodeBlockLowlightExt
-        ? [StarterKit.configure({ codeBlock: false }), CodeBlockLowlightExt.configure({ lowlight: lowlightInstance })]
-        : [StarterKit]
-      ),
-      Image,
-      Link.configure({ openOnClick: false, autolink: true }),
-      Placeholder.configure({ placeholder: 'Commencez à écrire votre article… (tapez / pour les commandes)' }),
-      CharacterCount,
-      Underline,
-      createSlashCommandExtension(slashCallbacksRef.current),
-    ];
-  }, [isMounted]);
+  const extensions = useMemo(() => [
+    ...(CodeBlockLowlightExt
+      ? [StarterKit.configure({ codeBlock: false }), CodeBlockLowlightExt.configure({ lowlight: lowlightInstance })]
+      : [StarterKit]
+    ),
+    Image,
+    Link.configure({ openOnClick: false, autolink: true }),
+    Placeholder.configure({ placeholder: 'Commencez à écrire votre article… (tapez / pour les commandes)' }),
+    CharacterCount,
+    Underline,
+    createSlashCommandExtension(slashCallbacksRef.current),
+  ], []);
 
   const editor = useEditor({
     extensions,
@@ -368,12 +376,13 @@ export function ArticleEditor({
     return () => document.removeEventListener('click', close);
   }, [slashMenuOpen]);
 
+  // Ne pas rendre jusqu'à montage complet côté client
   if (!isMounted) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[var(--bg-primary)] px-6">
         <div className="text-center">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--border)] border-t-[var(--text-accent)] mx-auto" />
-          <p className="mt-4 text-[var(--text-secondary)]">Chargement de l&apos;éditeur…</p>
+          <p className="mt-4 text-[var(--text-secondary)]">Chargement…</p>
         </div>
       </div>
     );
@@ -428,16 +437,16 @@ export function ArticleEditor({
         </div>
 
         {/* Toolbar */}
-        {isMounted && <EditorToolbar editor={editor} onImageUpload={() => setShowImageUpload(true)} />}
+        <EditorToolbar editor={editor} onImageUpload={() => setShowImageUpload(true)} />
 
         {/* Editor */}
         <div className="flex-1 px-8 md:px-16 py-8">
-          {isMounted && editor && <EditorBubbleMenu editor={editor} />}
-          {isMounted && <EditorContent editor={editor} />}
+          {editor && <EditorBubbleMenu editor={editor} />}
+          <EditorContent editor={editor} />
         </div>
 
         {/* Image upload popup */}
-        {isMounted && showImageUpload && articleId && (
+        {showImageUpload && articleId && (
           <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setShowImageUpload(false)}>
             <div className="absolute inset-0 overlay-backdrop" />
             <div className="relative z-10 bg-[var(--bg-primary)] border border-[var(--border)] rounded-2xl shadow-2xl" onClick={(e) => e.stopPropagation()}>
@@ -452,7 +461,7 @@ export function ArticleEditor({
       </div>
 
       {/* Slash command menu */}
-      {isMounted && slashMenuOpen && slashItems.length > 0 && typeof document !== 'undefined' && createPortal(
+      {slashMenuOpen && slashItems.length > 0 && typeof document !== 'undefined' && createPortal(
         <div
           style={{ position: 'absolute', top: slashMenuPos.top, left: slashMenuPos.left, zIndex: 9999 }}
           onClick={(e) => e.stopPropagation()}
@@ -478,7 +487,7 @@ export function ArticleEditor({
             </button>
           </div>
           <div className="p-5 space-y-6">
-            {isMounted && sidePanel === 'meta' && (
+            {sidePanel === 'meta' && (
               <>
                 <ArticleMetaForm
                   articleId={articleId ?? ''}
@@ -498,7 +507,7 @@ export function ArticleEditor({
                 )}
               </>
             )}
-            {isMounted && sidePanel === 'history' && articleId && (
+            {sidePanel === 'history' && articleId && (
               <ArticleVersionHistory
                 articleId={articleId}
                 onRestore={(versionId) => console.log('Restore', versionId)}
@@ -508,5 +517,44 @@ export function ArticleEditor({
         </div>
       )}
     </div>
+  );
+}
+
+export function ArticleEditor({
+  mode,
+  articleId,
+  initialContent = '',
+  initialMeta,
+  isPublished = false,
+  onCreated,
+  onSaved,
+}: ArticleEditorProps) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[var(--bg-primary)] px-6">
+        <div className="text-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--border)] border-t-[var(--text-accent)] mx-auto" />
+          <p className="mt-4 text-[var(--text-secondary)]">Chargement de l&apos;éditeur…</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <ArticleEditorContent
+      mode={mode}
+      initialArticleId={articleId}
+      initialContent={initialContent}
+      initialMeta={initialMeta}
+      isPublished={isPublished}
+      onCreated={onCreated}
+      onSaved={onSaved}
+    />
   );
 }
