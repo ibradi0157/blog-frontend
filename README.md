@@ -10,8 +10,8 @@ copy .env.example .env.local   # Windows — ou: cp .env.example .env.local
 npm run dev
 ```
 
-- Frontend : [http://localhost:3000](http://localhost:3000)
-- Backend attendu par défaut : `http://localhost:3001` (variable `NEXT_PUBLIC_API_URL`)
+- Frontend : [http://localhost:3001](http://localhost:3001)
+- Backend attendu par défaut : `http://localhost:3000` (variable `NEXT_PUBLIC_API_URL`)
 
 ## Documentation
 
@@ -36,7 +36,7 @@ npm run dev
 
 ## Connexion backend (résumé)
 
-1. Lancer l'API NestJS compatible (port `3001` ou autre).
+1. Lancer l'API NestJS compatible (port `3000` ou autre).
 2. Configurer `.env.local` :
 
 ```env

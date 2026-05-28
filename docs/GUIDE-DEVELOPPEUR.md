@@ -39,7 +39,7 @@ Le frontend **ne contient pas** de base de données ni de logique métier persis
 ```
 ┌─────────────────┐         HTTP (REST)          ┌─────────────────┐
 │  Navigateur     │ ◄──────────────────────────► │  Backend NestJS │
-│  Next.js :3000  │         JWT Bearer           │  API :3001      │
+│  Next.js :3001  │         JWT Bearer           │  API :3000      │
 └────────┬────────┘                              └────────┬────────┘
          │                                                │
          │         WebSocket (Socket.IO)                  │
@@ -87,7 +87,7 @@ Ouvrez [http://localhost:3000](http://localhost:3000).
 Dans un autre terminal :
 
 ```bash
-curl http://localhost:3001/health
+curl http://localhost:3000/health
 ```
 
 Si le frontend et le backend tournent, la connexion est prête pour login et données dynamiques.
@@ -110,7 +110,7 @@ Si le frontend et le backend tournent, la connexion est prête pour login et don
 
 | Variable | Obligatoire | Défaut | Description |
 |----------|-------------|--------|-------------|
-| `NEXT_PUBLIC_API_URL` | Non | `http://localhost:3001` | URL de base de l'API REST |
+| `NEXT_PUBLIC_API_URL` | Non | `http://localhost:3000` | URL de base de l'API REST |
 | `NEXT_PUBLIC_WS_URL` | Non | = `NEXT_PUBLIC_API_URL` | URL Socket.IO (notifications) |
 
 **Pourquoi `NEXT_PUBLIC_` ?** Next.js n'expose au navigateur que les variables avec ce préfixe. L'API est appelée depuis le client (formulaires, dashboard), donc l'URL doit être publique.
@@ -322,12 +322,12 @@ Sans backend Socket.IO, les notifications restent disponibles via **polling HTTP
 
 ### CORS (indispensable en développement)
 
-Le frontend tourne sur `http://localhost:3000`, l'API sur `http://localhost:3001` → **origines différentes**.
+Le frontend tourne sur `http://localhost:3001`, l'API sur `http://localhost:3000` → **origines différentes**.
 
 Le backend doit autoriser :
 
 ```
-Access-Control-Allow-Origin: http://localhost:3000
+Access-Control-Allow-Origin: http://localhost:3001
 Access-Control-Allow-Headers: Content-Type, Authorization
 Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS
 ```
@@ -336,7 +336,7 @@ Avec NestJS, cela se configure généralement dans `main.ts` :
 
 ```typescript
 app.enableCors({
-  origin: process.env.FRONTEND_URL ?? 'http://localhost:3000',
+  origin: process.env.FRONTEND_URL ?? 'http://localhost:3001',
   credentials: true, // si cookies un jour
 });
 ```
@@ -505,7 +505,7 @@ Constantes nommées : `ROUTES` dans `src/lib/constants.ts`.
 | Symptôme | Cause probable | Solution |
 |----------|----------------|----------|
 | « Impossible de joindre le serveur » | Backend arrêté ou mauvaise URL | Vérifier `NEXT_PUBLIC_API_URL`, lancer l'API, `curl /health` |
-| Erreur CORS dans la console | Backend n'autorise pas `:3000` | Configurer CORS sur NestJS |
+| Erreur CORS dans la console | Backend n'autorise pas `:3001` | Configurer CORS sur NestJS |
 | 401 sur toutes les actions | Token absent/expiré | Se reconnecter ; vérifier `localStorage` → `blog_access_token` |
 | Images cassées | URL upload non autorisée par Next Image | Ajouter hostname dans `next.config.ts` |
 | Notifications temps réel KO | Socket.IO down ou mauvais `WS_URL` | Vérifier `NEXT_PUBLIC_WS_URL` ; HTTP seul fonctionne quand même |
