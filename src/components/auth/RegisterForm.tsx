@@ -105,17 +105,17 @@ export function RegisterForm() {
         displayName: formData.username.trim(),
       });
 
-      // SIMPLE_USER registration: backend returns { data: { email, expiresAt } }
-      // Other roles (PRIMARY_ADMIN): returns user data without accessToken
-      const isSingleUserFlow = (response.data as any)?.expiresAt;
-      
+      const hasAccessToken = Boolean(response?.data?.accessToken)
+      const isSingleUserFlow = Boolean((response.data as any)?.expiresAt)
+
       if (isSingleUserFlow) {
-        // SIMPLE_USER: email verification required
-        const emailParam = encodeURIComponent(formData.email.trim().toLowerCase());
-        router.push(`${ROUTES.VERIFY_EMAIL}?email=${emailParam}`);
+        const emailParam = encodeURIComponent(formData.email.trim().toLowerCase())
+        router.push(`${ROUTES.VERIFY_EMAIL}?email=${emailParam}`)
+      } else if (hasAccessToken) {
+        await login(response)
       } else {
-        // Other roles: attempt login (may need separate login endpoint)
-        await login(response);
+        const emailParam = encodeURIComponent(formData.email.trim().toLowerCase())
+        router.push(`${ROUTES.LOGIN}?registered=1&email=${emailParam}`)
       }
     } catch (err: unknown) {
       const message =

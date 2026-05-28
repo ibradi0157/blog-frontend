@@ -123,12 +123,19 @@ export function tokenExpiresInSeconds(token: string): number {
  * Retourne null si le token est invalide ou expiré.
  */
 export function getUserFromToken(token: string): AuthUser | null {
-  if (!isTokenValid(token)) return null
+  if (!isTokenValid(token)) {
+    console.warn('[auth] Token invalide ou expiré lors de la lecture du token')
+    return null
+  }
+
   const payload = decodeToken(token)
   if (!payload) return null
 
   const userId = payload.sub ?? payload.userId
-  if (!userId || !payload.email || !payload.role) return null
+  if (!userId || !payload.email || !payload.role) {
+    console.warn('[auth] Payload JWT incomplet : impossible d extraire l utilisateur')
+    return null
+  }
 
   return {
     id:    userId,

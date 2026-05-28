@@ -79,6 +79,7 @@ const ADMIN_NAV: NavSection[] = [
     items: [
       { href: ROUTES.ADMIN_NEWSLETTER,         icon: Mail,            label: 'Newsletter'      },
       { href: ROUTES.ADMIN_HOMEPAGE,           icon: Home,            label: 'Homepage'        },
+      { href: ROUTES.ADMIN_LEGAL,              icon: FileText,        label: 'Pages légales'   },
       { href: ROUTES.ADMIN_SITE,               icon: Globe,           label: 'Site'            },
       { href: ROUTES.ADMIN_SECURITY,           icon: Shield,          label: 'Sécurité'        },
     ],

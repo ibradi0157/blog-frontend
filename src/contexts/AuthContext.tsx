@@ -118,7 +118,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
       return
     }
 
-    const delay = Math.max(0, (secondsLeft - 10) * 1_000)
+    if (secondsLeft <= 10) {
+      store.logout()
+      router.push(ROUTES.LOGIN + '?expired=1')
+      return
+    }
+
+    const delay = (secondsLeft - 10) * 1_000
     timerRef.current = setTimeout(() => {
       store.logout()
       router.push(ROUTES.LOGIN + '?expired=1')

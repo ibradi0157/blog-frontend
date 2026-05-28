@@ -111,6 +111,7 @@ export const ROUTES = {
   ADMIN_ANALYTICS_REALTIME:'/admin/analytics/temps-reel',
   ADMIN_NEWSLETTER:        '/admin/newsletter',
   ADMIN_HOMEPAGE:          '/admin/homepage',
+  ADMIN_LEGAL:             '/admin/legal',
   ADMIN_SITE:              '/admin/site',
   ADMIN_SECURITY:          '/admin/securite',
 } as const
