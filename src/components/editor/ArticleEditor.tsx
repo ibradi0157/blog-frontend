@@ -1,7 +1,6 @@
 ﻿'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import dynamic from 'next/dynamic';
 import { useEditor, EditorContent, Extension } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
@@ -9,18 +8,6 @@ import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
 import CharacterCount from '@tiptap/extension-character-count';
 import Underline from '@tiptap/extension-underline';
-
-// CodeBlockLowlight: chargé dynamiquement si disponible
-let CodeBlockLowlightExt: any = null;
-let lowlightInstance: any = null;
-try {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { default: CodeBlockLowlight } = require('@tiptap/extension-code-block-lowlight');
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { common, createLowlight } = require('lowlight');
-  CodeBlockLowlightExt = CodeBlockLowlight;
-  lowlightInstance = createLowlight(common);
-} catch { /* not installed yet */ }
 import { Settings, History, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/api-client';
@@ -49,77 +36,12 @@ export interface ArticleEditorProps {
 type SidePanel = 'meta' | 'history' | null;
 
 /**
- * Crée l'extension Tiptap pour les slash commands.
- * Utilise @tiptap/suggestion (native) si disponible avec render callbacks complets.
- * Sinon fallback vers une extension no-op (ArticleEditor gère la détection manuelle).
+ * Extension no-op pour les slash commands.
+ * La détection et le menu sont gérés manuellement dans onUpdate (évite un bug
+ * ProseMirror avec @tiptap/suggestion : DecorationGroup.locals / localsInner).
  */
-function createSlashCommandExtension(callbacks: {
-  onOpen:   (query: string, rect: DOMRect | null) => void;
-  onUpdate: (query: string) => void;
-  onClose:  () => void;
-  onKeyDown: (event: KeyboardEvent) => boolean;
-  getItems: (query: string) => ReturnType<typeof getSlashItems>;
-}) {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const Suggestion = require('@tiptap/suggestion').default ?? require('@tiptap/suggestion');
-
-    return Extension.create({
-      name: 'slashCommand',
-
-      addOptions() {
-        return {
-          suggestion: {
-            char: '/',
-            allowSpaces: false,
-
-            items: ({ query }: { query: string }) => callbacks.getItems(query),
-
-            render: () => ({
-              onStart: (props: any) => {
-                const rect = props.clientRect?.() ?? null;
-                callbacks.onOpen(props.query ?? '', rect);
-              },
-              onUpdate: (props: any) => {
-                callbacks.onUpdate(props.query ?? '');
-              },
-              onExit: () => {
-                callbacks.onClose();
-              },
-              onKeyDown: ({ event }: { event: KeyboardEvent }) => {
-                if (['ArrowUp', 'ArrowDown', 'Enter', 'Escape'].includes(event.key)) {
-                  return callbacks.onKeyDown(event);
-                }
-                return false;
-              },
-            }),
-
-            command: ({ editor, range, props }: any) => {
-              if (props?.command) {
-                const from = range.from;
-                const to = range.to;
-                editor.chain().focus().deleteRange({ from, to }).run();
-                props.command(editor);
-              }
-            },
-          },
-        };
-      },
-
-      addProseMirrorPlugins() {
-        return [
-          Suggestion({
-            editor: this.editor,
-            ...this.options.suggestion,
-          }),
-        ];
-      },
-    });
-  } catch {
-    // @tiptap/suggestion non installé — retourner une extension no-op
-    // ArticleEditor gère la détection manuelle via onUpdate
-    return Extension.create({ name: 'slashCommand' });
-  }
+function createSlashCommandExtension() {
+  return Extension.create({ name: 'slashCommand' });
 }
 
 interface ArticleEditorContentProps {
@@ -169,36 +91,18 @@ function ArticleEditorContent({
   const contentRef = useRef(initialContent);
   const isHydratingEditor = useRef(false);
 
-  const slashCallbacksRef = useRef({
-    onOpen:    (query: string, rect: DOMRect | null) => {
-      const items = getSlashItems(query);
-      setSlashItems(items);
-      setSlashMenuOpen(true);
-      if (rect) setSlashMenuPos({ top: rect.bottom + window.scrollY + 4, left: rect.left });
-    },
-    onUpdate:  (query: string) => {
-      setSlashItems(getSlashItems(query));
-    },
-    onClose:   () => setSlashMenuOpen(false),
-    onKeyDown: (event: KeyboardEvent) => slashRef.current?.onKeyDown({ event }) ?? false,
-    getItems:  getSlashItems,
-  });
-
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
   const extensions = useMemo(() => [
-    ...(CodeBlockLowlightExt
-      ? [StarterKit.configure({ codeBlock: false }), CodeBlockLowlightExt.configure({ lowlight: lowlightInstance })]
-      : [StarterKit]
-    ),
+    StarterKit,
     Image,
     Link.configure({ openOnClick: false, autolink: true }),
     Placeholder.configure({ placeholder: 'Commencez à écrire votre article… (tapez / pour les commandes)' }),
     CharacterCount,
     Underline,
-    createSlashCommandExtension(slashCallbacksRef.current),
+    createSlashCommandExtension(),
   ], []);
 
   const editor = useEditor({
