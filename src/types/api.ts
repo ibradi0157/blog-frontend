@@ -1015,9 +1015,9 @@ export interface UpdateSiteSettingsDto {
 // ─────────────────────────────────────────────
 
 export type LegalPageSlug =
-  | 'terms-of-service'
-  | 'privacy-policy'
-  | 'cookies'
+  | 'privacy'
+  | 'terms'
+  | 'cookie-policy'
   | 'legal-notice';
 
 export interface LegalPage {
@@ -1025,8 +1025,26 @@ export interface LegalPage {
   slug: LegalPageSlug | string;
   title: string;
   content: string;
-  isPublished: boolean;
+  published: boolean;
   updatedAt: string;
+  createdAt?: string;
+}
+
+/** POST /auth/register — réponse avec ou sans token */
+export interface RegisterResponse {
+  success: boolean;
+  message?: string;
+  data: {
+    accessToken?: string;
+    userId?: string;
+    email: string;
+    displayName?: string;
+    role?: RoleName;
+    isEmailVerified?: boolean;
+    avatarUrl?: string | null;
+    requiresEmailVerification?: boolean;
+    expiresAt?: string;
+  };
 }
 
 /** GET /legal/:slug (public) */

@@ -1416,10 +1416,10 @@ export const legalApi = {
    * PATCH /admin/legal/:slug/published
    * Publie ou dépublie une page légale.
    */
-  setPublished: (slug: LegalPageSlug | string, isPublished: boolean) =>
-    http.patch<ApiResponse<LegalPage>>(
+  setPublished: (slug: LegalPageSlug | string, published: boolean) =>
+    http.patch<LegalPage>(
       `/admin/legal/${slug}/published`,
-      { body: { isPublished } }
+      { body: { published } }
     ),
 }
 

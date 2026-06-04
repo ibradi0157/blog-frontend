@@ -26,8 +26,8 @@ const FOOTER_LINKS = [
   {
     title: 'Légal',
     links: [
-      { href: '/legal/privacy-policy',    label: 'Confidentialité'      },
-      { href: '/legal/terms-of-service',  label: 'Conditions d\'usage'  },
+      { href: '/legal/privacy',           label: 'Confidentialité'      },
+      { href: '/legal/terms',             label: 'Conditions d\'usage'  },
       { href: '/legal/cookie-policy',     label: 'Cookies'              },
     ],
   },

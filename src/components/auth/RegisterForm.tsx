@@ -105,10 +105,12 @@ export function RegisterForm() {
         displayName: formData.username.trim(),
       });
 
-      const hasAccessToken = Boolean(response?.data?.accessToken)
-      const isSingleUserFlow = Boolean((response.data as any)?.expiresAt)
+      const hasAccessToken = Boolean(response?.data?.accessToken);
+      const needsEmailVerification = Boolean(
+        (response.data as { requiresEmailVerification?: boolean })?.requiresEmailVerification,
+      );
 
-      if (isSingleUserFlow) {
+      if (needsEmailVerification) {
         const emailParam = encodeURIComponent(formData.email.trim().toLowerCase())
         router.push(`${ROUTES.VERIFY_EMAIL}?email=${emailParam}`)
       } else if (hasAccessToken) {

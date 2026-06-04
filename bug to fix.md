@@ -175,11 +175,11 @@ export default function AdminLayout({ children }) {
 
 - [ ] Corriger les ports dans constants.ts
 - [ ] Améliorer l'hydratation de session
-- [ ] Corriger le flux d'inscription avec vérification email
-- [ ] Ajouter la page admin/legal
-- [ ] Ajouter le lien "Pages légales" dans le menu admin
-- [ ] Protéger le layout admin avec RoleGuard
-- [ ] Aligner les slugs des pages légales
+- [x] Corriger le flux d'inscription avec vérification email (`requiresEmailVerification`)
+- [x] Ajouter la page admin/legal (LegalPagesManager)
+- [x] Ajouter le lien "Pages légales" dans le menu admin
+- [x] Protéger le layout admin avec RoleGuard
+- [x] Aligner les slugs des pages légales (`privacy`, `terms`, `cookie-policy`, `legal-notice`)
 - [ ] Gérer l'upload d'images sans articleId
 - [ ] Éviter les sauvegardes parallèles dans l'éditeur
 - [ ] Supprimer les console.log de debug

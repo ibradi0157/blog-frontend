@@ -1,6 +1,6 @@
-import { PageLoader } from '@/components/ui/loading-spinner'
+import { LegalPagesManager } from '@/components/admin/LegalPagesManager';
 
-export const metadata = { title: 'Pages légales' }
+export const metadata = { title: 'Pages légales — Admin' };
 
 export default function AdminLegalPage() {
   return (
@@ -8,15 +8,11 @@ export default function AdminLegalPage() {
       <div className="space-y-2">
         <h1 className="text-2xl font-bold text-[var(--text-primary)]">Pages légales</h1>
         <p className="max-w-2xl text-sm text-[var(--text-muted)]">
-          Gérez ici les pages légales du site : confidentialité, conditions générales et mentions légales.
+          Modifiez les pages accessibles publiquement sous /legal/[slug]. Publiez chaque page
+          lorsqu’elle est prête.
         </p>
       </div>
-
-      <div className="rounded-3xl border border-[var(--border)] bg-[var(--bg-card)] p-6">
-        <p className="text-sm text-[var(--text-secondary)]">
-          Aucune interface de gestion n'est encore implémentée pour cette page. Elle est prête à être reliée aux endpoints backend.
-        </p>
-      </div>
+      <LegalPagesManager />
     </div>
-  )
+  );
 }

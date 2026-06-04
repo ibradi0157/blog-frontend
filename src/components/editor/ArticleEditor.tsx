@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useEditor, EditorContent, Extension } from '@tiptap/react';
@@ -90,6 +90,7 @@ function ArticleEditorContent({
   const autosaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const contentRef = useRef(initialContent);
   const isHydratingEditor = useRef(false);
+  const isSavingRef = useRef(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -205,8 +206,42 @@ function ArticleEditorContent({
     setSlashMenuOpen(false);
   }, [editor]);
 
+  // Handle image upload - creates article first if needed (mode create)
+  const handleImageUpload = useCallback(async () => {
+    if (articleId) {
+      setShowImageUpload(true);
+      return;
+    }
+    // Mode create without articleId - save draft first to get an ID
+    if (mode === 'create') {
+      setAutosaveStatus('saving');
+      try {
+        const payload = {
+          title: title || 'Brouillon sans titre',
+          content: contentRef.current,
+          excerpt: meta.excerpt || undefined,
+          categoryId: meta.categoryId || undefined,
+          tags: meta.tags.length ? meta.tags : undefined,
+        };
+        const res = await apiClient.articles.create(payload);
+        const newId = (res as any)?.data?.id ?? (res as any)?.id;
+        if (newId) {
+          setArticleId(newId);
+          onCreated?.(newId);
+          setAutosaveStatus('saved');
+          // Now open the image upload dialog with the new articleId
+          setTimeout(() => setShowImageUpload(true), 100);
+        }
+      } catch {
+        setAutosaveStatus('error');
+      }
+    }
+  }, [articleId, mode, title, meta, onCreated]);
+
   const save = useCallback(async () => {
-    if (!articleId && mode === 'edit') return;
+    // Race condition protection - prevent parallel saves
+    if (isSavingRef.current) return;
+    isSavingRef.current = true;
     setAutosaveStatus('saving');
     try {
       const payload = {
@@ -230,6 +265,8 @@ function ArticleEditorContent({
       onSaved?.();
     } catch {
       setAutosaveStatus('error');
+    } finally {
+      isSavingRef.current = false;
     }
   }, [articleId, mode, title, meta, onCreated, onSaved]);
 
@@ -341,7 +378,7 @@ function ArticleEditorContent({
         </div>
 
         {/* Toolbar */}
-        <EditorToolbar editor={editor} onImageUpload={() => setShowImageUpload(true)} />
+        <EditorToolbar editor={editor} onImageUpload={handleImageUpload} />
 
         {/* Editor */}
         <div className="flex-1 px-8 md:px-16 py-8">
