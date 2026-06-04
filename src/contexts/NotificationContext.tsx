@@ -27,6 +27,7 @@ import {
   createSocket,
   disconnectSocket,
   onNotification,
+  onUnreadCount,
   joinUserRoom,
 } from '@/lib/socket'
 import api from '@/lib/api-client'
@@ -56,7 +57,7 @@ export function NotificationProvider({
   children: React.ReactNode
 }) {
   const { token, user, isAuthenticated } = useAuthStore()
-  const { setNotifications, addNotification, setLoading, setError } =
+  const { setNotifications, addNotification, setUnreadCount, setLoading, setError } =
     useNotificationStore()
 
   const hasFetchedRef  = useRef(false)
@@ -134,6 +135,7 @@ export function NotificationProvider({
     // The socket is only disconnected in the isAuthenticated=false effect above.
     return () => {
       offNotification()
+      offUnreadCount()
       socket.off('connect', handleConnect)
       socket.off('connect_error', handleConnectError)
       socketActiveRef.current = false

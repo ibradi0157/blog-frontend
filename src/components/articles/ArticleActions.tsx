@@ -38,7 +38,8 @@ export function ArticleActions({
       const res = await api.likes.likeArticle(articleId, !liked);
       setLiked(!liked);
       setDisliked(false);
-      if (res.likes !== undefined) setLikes(res.likes);
+      const counts = (res as { data?: { likes?: number } })?.data ?? res;
+      if (counts.likes !== undefined) setLikes(counts.likes);
     } catch { /* ignore */ }
   }
 

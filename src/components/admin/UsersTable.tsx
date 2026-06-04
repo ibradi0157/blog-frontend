@@ -1,20 +1,29 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Ban, Trash2, MoreHorizontal } from 'lucide-react';
+import { Search, Ban } from 'lucide-react';
 import { useUsers } from '@/hooks/useUsers';
+import { useAuth } from '@/hooks/useAuth';
 import { UserRoleSelect } from './UserRoleSelect';
+import { ROLES } from '@/lib/constants';
 import { UserAvatar } from '@/components/profile/UserAvatar';
 import { formatDate } from '@/lib/utils';
 import { cn } from '@/lib/cn';
 import type { RoleName } from '@/types/api';
 
 export function UsersTable() {
+  const { user: currentUser } = useAuth();
+  const canChangeRole = currentUser?.role === ROLES.PRIMARY_ADMIN;
   const [search, setSearch] = useState('');
   const [role, setRole] = useState<RoleName | ''>('');
   const [page, setPage] = useState(1);
 
   const { users, total, isLoading, banUser } = useUsers({ page, limit: 20, search: search || undefined, role: role || undefined });
+
+  const handleBan = async (userId: string, displayName?: string) => {
+    if (!confirm(`Bannir ${displayName ?? 'cet utilisateur'} ?`)) return;
+    await banUser(userId);
+  };
 
   return (
     <div className="space-y-4">
@@ -73,12 +82,16 @@ export function UsersTable() {
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <UserRoleSelect userId={user.id} currentRole={(user as any).role?.name ?? (user as any).role} />
+                        <UserRoleSelect
+                          userId={user.id}
+                          currentRole={(user as any).role?.name ?? (user as any).role}
+                          canChangeRole={canChangeRole}
+                        />
                       </td>
                       <td className="px-4 py-3 text-[var(--text-muted)] text-xs">{formatDate(user.createdAt)}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <button onClick={() => banUser(user.id)} className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--error)] hover:bg-[var(--error)]/10 transition-colors" title="Bannir">
+                          <button onClick={() => handleBan(user.id, (user as any).displayName)} className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--error)] hover:bg-[var(--error)]/10 transition-colors" title="Bannir">
                             <Ban size={15} />
                           </button>
                         </div>

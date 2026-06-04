@@ -41,7 +41,8 @@ interface ClientToServerEvents {
   /** Rejoindre la room privée de l'utilisateur */
   join_room: (data: { userId: string }) => void
   /** Marquer une notification comme lue */
-  mark_read: (data: { notificationId: string }) => void
+  mark_as_read: (data: { notificationId: string }) => void
+  unread_count: (data: { count: number }) => void
 }
 
 export type AppSocket = Socket<ServerToClientEvents, ClientToServerEvents>
@@ -166,5 +167,17 @@ export function joinUserRoom(userId: string): void {
  */
 export function emitMarkRead(notificationId: string): void {
   if (!socketInstance?.connected) return
-  socketInstance.emit('mark_read', { notificationId })
+  socketInstance.emit('mark_as_read', { notificationId })
+}
+
+/**
+ * Écoute les mises à jour du compteur non-lu.
+ */
+export function onUnreadCount(handler: (count: number) => void): () => void {
+  const socket = socketInstance
+  if (!socket) return () => {}
+
+  const listener = (payload: { count: number }) => handler(payload.count)
+  socket.on('unread_count', listener)
+  return () => socket.off('unread_count', listener)
 }

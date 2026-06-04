@@ -28,7 +28,9 @@ interface RegisterFormErrors {
 const PASSWORD_RULES = [
   { label: '8 caractères minimum', test: (p: string) => p.length >= 8 },
   { label: 'Une majuscule', test: (p: string) => /[A-Z]/.test(p) },
+  { label: 'Une minuscule', test: (p: string) => /[a-z]/.test(p) },
   { label: 'Un chiffre', test: (p: string) => /\d/.test(p) },
+  { label: 'Un caractère spécial', test: (p: string) => /[^A-Za-z0-9]/.test(p) },
 ];
 
 export function RegisterForm() {
@@ -65,8 +67,8 @@ export function RegisterForm() {
 
     if (!data.password) {
       errs.password = 'Le mot de passe est requis.';
-    } else if (data.password.length < 8) {
-      errs.password = 'Minimum 8 caractères.';
+    } else if (!PASSWORD_RULES.every((r) => r.test(data.password))) {
+      errs.password = 'Le mot de passe ne respecte pas les critères de sécurité.';
     }
 
     if (!data.confirmPassword) {

@@ -187,7 +187,7 @@ export interface UserArticlesResponse {
 
 /** PATCH /users/:id/role */
 export interface ChangeRoleDto {
-  role: RoleName;
+  role: 'MEMBER' | 'SECONDARY_ADMIN';
 }
 
 // ─────────────────────────────────────────────

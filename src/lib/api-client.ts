@@ -506,6 +506,18 @@ export const usersApi = {
     http.patch<ApiResponse<User>>('/users/me/profile', { body: dto }),
 
   /**
+   * POST /users
+   * Crée un membre (admin). Réservé PRIMARY_ADMIN + SECONDARY_ADMIN.
+   */
+  create: (dto: {
+    email: string
+    displayName: string
+    password: string
+    confirmPassword: string
+  }) =>
+    http.post<ApiResponse<User>>('/users', { body: dto }),
+
+  /**
    * PATCH /users/:id/ban
    * Bannir un utilisateur. Réservé admins.
    */
@@ -1391,6 +1403,13 @@ export const siteSettingsApi = {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const legalApi = {
+  /**
+   * GET /legal
+   * Liste les pages légales publiées. Route publique.
+   */
+  listPublished: () =>
+    http.get<LegalPage[] | ApiResponse<LegalPage[]>>('/legal', { noAuth: true }),
+
   /**
    * GET /legal/:slug
    * Récupère une page légale publiée. Route publique.

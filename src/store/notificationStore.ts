@@ -46,6 +46,8 @@ interface NotificationActions {
   remove:           (id: string) => void
   /** Vide complètement la liste */
   clear:            () => void
+  /** Met à jour le compteur non-lu (WebSocket unread_count) */
+  setUnreadCount:   (count: number) => void
   setLoading:       (loading: boolean) => void
   setError:         (error: string | null) => void
 }
@@ -121,6 +123,8 @@ export const useNotificationStore = create<
   // ── clear ─────────────────────────────────────────────────────────────
   clear: () =>
     set({ notifications: [], unreadCount: 0, isLoaded: false }),
+
+  setUnreadCount: (count) => set({ unreadCount: Math.max(0, count) }),
 
   setLoading: (loading) => set({ isLoading: loading }),
   setError:   (error)   => set({ error, isLoading: false }),

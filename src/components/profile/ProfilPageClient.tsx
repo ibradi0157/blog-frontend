@@ -17,10 +17,6 @@ export function ProfilPageClient() {
   const [form, setForm] = useState<UpdateProfileDto>({
     displayName: user?.displayName ?? '',
     bio: user?.bio ?? '',
-    website: user?.website ?? '',
-    twitter: user?.twitter ?? '',
-    github: user?.github ?? '',
-    linkedin: user?.linkedin ?? '',
   });
 
   const update = (key: keyof UpdateProfileDto) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -32,7 +28,10 @@ export function ProfilPageClient() {
     setError('');
     setSuccess(false);
     try {
-      await apiClient.users.updateProfile(form);
+      await apiClient.users.updateProfile({
+        displayName: form.displayName,
+        bio: form.bio,
+      });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch {
@@ -74,20 +73,6 @@ export function ProfilPageClient() {
             rows={4}
             className={cn(inputCls, 'resize-none')}
           />
-        </div>
-
-        <div className="grid sm:grid-cols-2 gap-4">
-          {(['website', 'twitter', 'github', 'linkedin'] as const).map((key) => (
-            <div key={key}>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5 capitalize">{key}</label>
-              <input
-                value={(form[key] as string) ?? ''}
-                onChange={update(key)}
-                placeholder={`URL ${key}`}
-                className={inputCls}
-              />
-            </div>
-          ))}
         </div>
 
         {error && <p className="text-sm text-[var(--error)]">{error}</p>}

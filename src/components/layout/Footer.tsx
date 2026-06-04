@@ -26,9 +26,11 @@ const FOOTER_LINKS = [
   {
     title: 'Légal',
     links: [
+      { href: ROUTES.LEGAL_INDEX,         label: 'Informations légales' },
       { href: '/legal/privacy',           label: 'Confidentialité'      },
       { href: '/legal/terms',             label: 'Conditions d\'usage'  },
       { href: '/legal/cookie-policy',     label: 'Cookies'              },
+      { href: '/legal/legal-notice',      label: 'Mentions légales'     },
     ],
   },
 ]

@@ -76,8 +76,16 @@ export function VerifyEmailForm() {
     setError('');
 
     try {
-      await authApi.verifyEmail({ email, code });
-      router.push(ROUTES.HOME);
+      const response = await authApi.verifyEmail({ email, code });
+      const token =
+        (response as { data?: { accessToken?: string } })?.data?.accessToken ??
+        (response as { accessToken?: string })?.accessToken;
+      if (token) {
+        await login(response);
+        router.push(ROUTES.DASHBOARD);
+      } else {
+        router.push(`${ROUTES.LOGIN}?verified=1`);
+      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Code invalide ou expiré.';
       setError(message);

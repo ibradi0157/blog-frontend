@@ -76,6 +76,7 @@ export const ROUTES = {
   AUTHORS:         '/auteurs',
   AUTHOR:          (id: string)   => `/auteurs/${id}`,
   SEARCH:          '/recherche',
+  LEGAL_INDEX:     '/legal',
   LEGAL:           (slug: string) => `/legal/${slug}`,
 
   // Auth
@@ -102,6 +103,7 @@ export const ROUTES = {
   // Admin
   ADMIN:                   '/admin',
   ADMIN_USERS:             '/admin/utilisateurs',
+  ADMIN_NEW_USER:          '/admin/utilisateurs/nouveau',
   ADMIN_USER:              (id: string) => `/admin/utilisateurs/${id}`,
   ADMIN_ARTICLES:          '/admin/articles',
   ADMIN_COMMENTS:          '/admin/commentaires',

@@ -2,6 +2,8 @@
 
 import useSWR from 'swr';
 import { apiClient } from '@/lib/api-client';
+import { useAuth } from '@/hooks/useAuth';
+import { ROLES } from '@/lib/constants';
 import { UserRoleSelect } from './UserRoleSelect';
 import { useToast } from '@/components/ui/toaster';
 import { formatDate } from '@/lib/utils';
@@ -14,6 +16,8 @@ export interface AdminUserDetailClientProps {
 
 export function AdminUserDetailClient({ userId }: AdminUserDetailClientProps) {
   const { toast } = useToast();
+  const { user: currentUser } = useAuth();
+  const canChangeRole = currentUser?.role === ROLES.PRIMARY_ADMIN;
   const { data, mutate, isLoading } = useSWR(
     `/users/${userId}`,
     () => (apiClient.users as any).getById?.(userId) ?? apiClient.users.getAll().then((r: any) => ({ data: r?.data?.find((u: any) => u.id === userId) }))
@@ -82,8 +86,10 @@ export function AdminUserDetailClient({ userId }: AdminUserDetailClientProps) {
               <span>Rôle :</span>
               <UserRoleSelect
                 userId={userId}
-                currentRole={(user.role ?? 'SIMPLE_USER') as RoleName}
+                currentRole={((user.role as { name?: RoleName })?.name ?? user.role ?? 'SIMPLE_USER') as RoleName}
+                canChangeRole={canChangeRole}
                 onChanged={() => { mutate(); toast('Rôle mis à jour.', 'success'); }}
+                onError={(msg) => toast(msg, 'error')}
               />
             </div>
           </div>

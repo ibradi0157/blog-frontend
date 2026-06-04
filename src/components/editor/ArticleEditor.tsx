@@ -278,10 +278,13 @@ function ArticleEditorContent({
   useEffect(() => () => { if (autosaveTimer.current) clearTimeout(autosaveTimer.current); }, []);
 
   const handlePublish = async () => {
-    if (!articleId) { await save(); return; }
+    if (!articleId) {
+      await save();
+      return;
+    }
     setIsSubmitting(true);
     try {
-      await apiClient.articles.update(articleId, { isPublished: true } as any);
+      await apiClient.articles.publish(articleId);
       setPublished(true);
     } finally {
       setIsSubmitting(false);
@@ -292,7 +295,7 @@ function ArticleEditorContent({
     if (!articleId) return;
     setIsSubmitting(true);
     try {
-      await apiClient.articles.update(articleId, { isPublished: false } as any);
+      await apiClient.articles.unpublish(articleId);
       setPublished(false);
     } finally {
       setIsSubmitting(false);
